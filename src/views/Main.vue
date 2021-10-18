@@ -48,6 +48,14 @@
                 <i class="el-icon-s-cooperation"></i>
                 <span slot="title">设备档案</span>
               </el-menu-item>
+              <el-menu-item index="/route/manage">
+                <i class="el-icon-s-promotion"></i>
+                <span slot="title">线路管理</span>
+              </el-menu-item>
+              <el-menu-item index="/site/manage">
+                <i class="el-icon-coordinate"></i>
+                <span slot="title">站点管理</span>
+              </el-menu-item>
               <el-menu-item index="/device/maintenanceRecord">
                 <i class="el-icon-document"></i>
                 <span slot="title">设备维护历史记录</span>

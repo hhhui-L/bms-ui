@@ -83,17 +83,17 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           const changePwdInfo = new FormData()
-          changePwdInfo.append('username', this.changeForm.user_name)
+          changePwdInfo.append('userName', this.changeForm.user_name)
           changePwdInfo.append('oldpassword', this.changeForm.old_password)
           changePwdInfo.append('newpassword', this.changeForm.new_password)
-          console.log(changePwdInfo)
           changePassword(changePwdInfo).then(res => {
-            alert(res.data.msg)
+            console.log(JSON.stringify(res.data))
             if (res.data.code === 200) {
+              alert('修改密码成功！')
               this.$router.push('/main')
             }
           }).catch(res => {
-            alert(res.data.msg)
+            alert('修改密码失败！')
           })
         } else {
           alert('error submit!!')

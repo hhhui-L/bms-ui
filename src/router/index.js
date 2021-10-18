@@ -59,7 +59,7 @@ const routes = [
       {
         path: '/users/manage',
         name: '用户管理',
-        component: () => import('../views/systemManage/usersManage'),
+        component: () => import('../views/systemManage/userManage'),
         meta: {
           title: '用户管理',
           requireAuth: true
@@ -89,6 +89,24 @@ const routes = [
         component: () => import('../views/deviceManage/deviceRecord'),
         meta: {
           title: '设备档案',
+          requireAuth: true
+        }
+      },
+      {
+        path: '/route/manage',
+        name: '线路管理',
+        component: () => import('../views/deviceManage/routeManage'),
+        meta: {
+          title: '线路管理',
+          requireAuth: true
+        }
+      },
+      {
+        path: '/site/manage',
+        name: '站点管理',
+        component: () => import('../views/deviceManage/siteManage'),
+        meta: {
+          title: '站点管理',
           requireAuth: true
         }
       },

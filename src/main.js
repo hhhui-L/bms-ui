@@ -11,6 +11,7 @@ import echarts from 'echarts'
 import VueParticles from 'vue-particles'
 import scroll from 'vue-seamless-scroll'
 import 'babel-polyfill'
+import htmlToExcel from './excel/htmlToExcel'
 
 Vue.use(VueRouter)
 Vue.use(ElementUI)
@@ -20,6 +21,7 @@ Vue.use(scroll)
 Vue.prototype.axios = axios
 Vue.prototype.echarts = echarts
 Vue.config.productionTip = false
+Vue.prototype.htmlToExcels = htmlToExcel
 
 new Vue({
   router,

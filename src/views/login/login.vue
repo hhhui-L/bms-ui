@@ -76,13 +76,15 @@
 </template>
 <script>
 // import { login } from '../../network/network'
+import { login } from '@/network/network'
+
 export default {
   name: 'login',
   data () {
     return {
       loginForm: {
         username: 'admin',
-        password: '12345'
+        password: '123456'
       },
       loginRules: {
         username: [{ required: true, message: '请输入名字', trigger: 'blur' }],
@@ -94,10 +96,11 @@ export default {
     handleLogin (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+
           // this.$router.push({ name: 'Main', params: { name: this.loginForm.username } })
           // const loginInfo = new FormData()
-          // loginInfo.append('userName', this.loginForm.username)
-          // loginInfo.append('passwd', this.loginForm.password)
+          // loginInfo.append('account', this.loginForm.username)
+          // loginInfo.append('password', this.loginForm.password)
           // console.log(loginInfo)
           // login(loginInfo).then(res => {
           //   console.log(res.data.msg)
