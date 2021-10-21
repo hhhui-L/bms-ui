@@ -9,34 +9,45 @@
         </el-row>
       </div>
       <el-table
-        :data="batteryDetailsTable"
+        :data="batteryListTable"
         fit
         highlight-current-row
         style="width: 100%;padding-left: 10px;padding-right: 10px;padding-left: 10px;border-bottom: #01FFFF"
         :header-cell-style="{color:'#01FFFF',fontSize:'23px',align:'center'}"
         :row-style="{fontSize:'23px',color:'white',}"
       >
-        <el-table-column label="电池组号" min-width="180px" prop="id" align="center"></el-table-column>
-        <el-table-column label="型号" min-width="180px" prop="model" align="center"></el-table-column>
-        <el-table-column label="充放电状态" min-width="150px" prop="chargeStatus" align="center"></el-table-column>
-        <el-table-column label="网关状态" min-width="150px" prop="gatewayStatus" align="center"></el-table-column>
-        <el-table-column label="电池状态" min-width="120px"  prop="batteryStatus" align="center"></el-table-column>
-        <el-table-column label="能耗" min-width="150px" prop="energyConsumption" align="center"></el-table-column>
+        <el-table-column label="公司名称" min-width="200px" prop="corp_name" align="center"></el-table-column>
+        <el-table-column label="id" v-if="false" min-width="150px" prop="id" align="center"></el-table-column>
+        <el-table-column label="设备编号" min-width="150px" prop="dev_num" align="center"></el-table-column>
+        <el-table-column label="设备类型" min-width="150px" prop="dev_type" align="center"></el-table-column>
+<!--        <el-table-column label="调试状态" min-width="150px" prop="dev_debug" align="center"></el-table-column>-->
+        <el-table-column label="控制器编号" min-width="150px" prop="ctrl_num" align="center"></el-table-column>
+<!--        <el-table-column label="创建时间" min-width="200px" prop="create_time" align="center"></el-table-column>-->
+        <el-table-column label="设备ID" min-width="200px" prop="dev_id" align="center"></el-table-column>
+<!--        <el-table-column label="对应电池编号" min-width="200px" prop="bat_model" align="center"></el-table-column>-->
+<!--        <el-table-column label="设备SN码" min-width="200px" prop="dev_sn" align="center"></el-table-column>-->
         <el-table-column label="电池组单体详情" min-width="200px" fixed="right" align="center">
-<!--          <template slot-scope="scope">-->
-<!--            <el-button-->
-<!--              size="mini"-->
-<!--              @click="handleCheck(scope.$index, scope.row)">查看</el-button>-->
-<!--            <el-button-->
-<!--              size="mini"-->
-<!--              type="danger"-->
-<!--              @click="handleDelete(scope.$index, scope.row)">删除</el-button>-->
+<!--          <template>-->
+<!--            <el-link href="/sensor/details" type="warning" target="_parent" >查看单体详情</el-link>-->
 <!--          </template>-->
-          <template>
-            <el-link href="/sensor/details" type="warning" target="_parent" >查看单体详情</el-link>
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              style="background-color: transparent;border: none;color:#FB932A;font-size: 23px"
+              @click="sensorDetails(scope.row)">查看电池单体详情</el-button>
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        class="msg-pagination-container"
+        :page-sizes="pageSizeList"
+        style="margin-top: 8px"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="totalCount"
+        align="right"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
     </div>
     <div style="height:98%;width: 55%;float:left;margin-bottom: 20px;">
       <div style="padding: 10px 10px 10px 20px;float: left;width: 96%;">
@@ -56,13 +67,13 @@
           <el-col :span="2" >报警</el-col>
         </el-row>
         <el-row class="elRowBase2" :gutter="10" style="padding-bottom: 8px;border-bottom: 1px solid #01FFFF">
-          <el-col :span="3" >实验室517</el-col>
-          <el-col :span="3" >GFM-200</el-col>
-          <el-col :span="5" >2021-09-30 14:07:32</el-col>
-          <el-col :span="3" >V1.0.5</el-col>
-          <el-col :span="3" >31</el-col>
-          <el-col :span="3" >96</el-col>
-          <el-col :span="2" style="color: #FF0000">在线</el-col>
+          <el-col :span="3" >{{ this.devNum }}</el-col>
+          <el-col :span="3" >{{ this.devType }}</el-col>
+          <el-col :span="5" >{{ this.time }}</el-col>
+          <el-col :span="3" >{{ this.TolVer }}</el-col>
+          <el-col :span="3" >{{ this.CellVer }}</el-col>
+          <el-col :span="3" >{{ this.debugDetail }}</el-col>
+          <el-col :span="2" style="color: #FF0000">{{ this.batStatus }}</el-col>
           <el-col :span="2" style="color: #FF0000">无</el-col>
         </el-row>
 <!--        <div style="padding: 10px 10px 10px 20px;float: left;width: 10%;height:85%;margin-right:20px;background-color: #67ACE4"></div>-->
@@ -85,7 +96,7 @@
                       <div slot="header" class="header">
                         <span class="card-title" >当前电压</span>
                       </div>
-                      <span style="color: #06F7A1;font-size: 40px">1.59 V</span>
+                      <span style="color: #06F7A1;font-size: 40px">{{this.packStatus.values.TolVolt+' V'}}</span>
                     </el-card>
                   </div>
                 </el-col>
@@ -99,7 +110,7 @@
                       <div slot="header" class="header">
                         <span class="card-title">当前电流</span>
                       </div>
-                      <span  style="color: #FB932A;font-size: 40px">1.32 A</span>
+                      <span  style="color: #FB932A;font-size: 40px">{{this.packStatus.values.TolCur +' A'}}</span>
                     </el-card>
                   </div>
                 </el-col>
@@ -113,7 +124,7 @@
                       <div slot="header" class="header">
                         <span class="card-title">当前SOC</span>
                       </div>
-                      <span style="color: #0BEBFA;font-size: 40px">60</span>
+                      <span style="color: #0BEBFA;font-size: 40px">{{this.packStatus.values.Soc}}</span>
                     </el-card>
                   </div>
                 </el-col>
@@ -137,6 +148,9 @@
 
 <script>
 import echarts from 'echarts'
+import { getPacklist } from '@/network/packDetails'
+import axios from 'axios'
+import { toDate } from '@/network/time'
 
 export default {
   name: 'batteryDetails',
@@ -145,71 +159,104 @@ export default {
       voltageChart: null,
       currentChart: null,
       socChart: null,
-      batteryDetailsTable: [{
-        id: '实验室517',
-        model: 'GFM-200',
-        chargeStatus: '浮充',
-        gatewayStatus: '离线',
-        batteryStatus: '在线',
-        energyConsumption: '0'
-      }, {
-        id: '实验室518',
-        model: 'GFM-200',
-        chargeStatus: '充电',
-        gatewayStatus: '离线',
-        batteryStatus: '在线',
-        energyConsumption: '0'
-      }, {
-        id: '实验室519',
-        model: 'GFM-200',
-        chargeStatus: '浮充',
-        gatewayStatus: '离线',
-        batteryStatus: '在线',
-        energyConsumption: '0'
-      }, {
-        id: '实验室520',
-        model: 'GFM-200',
-        chargeStatus: '充电',
-        gatewayStatus: '离线',
-        batteryStatus: '在线',
-        energyConsumption: '0'
-      }, {
-        id: '实验室517',
-        model: 'GFM-200',
-        chargeStatus: '浮充',
-        gatewayStatus: '离线',
-        batteryStatus: '在线',
-        energyConsumption: '0'
-      }, {
-        id: '实验室518',
-        model: 'GFM-200',
-        chargeStatus: '充电',
-        gatewayStatus: '离线',
-        batteryStatus: '在线',
-        energyConsumption: '0'
-      }, {
-        id: '实验室519',
-        model: 'GFM-200',
-        chargeStatus: '浮充',
-        gatewayStatus: '离线',
-        batteryStatus: '在线',
-        energyConsumption: '0'
-      }, {
-        id: '实验室520',
-        model: 'GFM-200',
-        chargeStatus: '充电',
-        gatewayStatus: '离线',
-        batteryStatus: '在线',
-        energyConsumption: '0'
-      }]
+      batteryListTable: [],
+      listInfo: {
+        corpname: '湖南大学实验室',
+        devnum: '',
+        devtype: '',
+        pagenum: '0',
+        pagesize: '10'
+      },
+      packid: '',
+      packStatus: [],
+      status: [],
+      batStatus: '0',
+      devNum: '0',
+      devType: '0',
+      TolVer: '0',
+      CellVer: '0',
+      debugDetail: '0',
+      time: '0',
+      totalCount: 400, // 总条目数
+      pageSizeList: [10, 20, 50, 100], // 选择每页显示个数
+      currentPage: 1, // 当前页数
+      pageSize: 10, // 每页条目数
+      dataIndex: 1
+      // packid: '1e3a83caa4154ac39c8e82118f8ad3a5'
     }
   },
   mounted () {
+    this.getBatteryList()
     this.voltageChartInit()
     this.currentChartInit()
     this.socChartInit()
   },
   methods: {
+    getBatteryList () {
+      getPacklist(this.listInfo).then(res => {
+        console.log('---this.listInfo--' + JSON.stringify(this.listInfo))
+        console.log('-----' + JSON.stringify(res.data))
+        this.batteryListTable = res.data.content
+        this.packid = res.data.content[0].dev_id
+        this.devNum = res.data.content[0].dev_num
+        this.devType = res.data.content[0].dev_type
+        console.log('--this.packid---' + this.packid)
+        this.getPackDetails()
+        this.totalCount = res.data.totalElements
+      }).catch(res => {
+        console.log(res.data)
+      })
+    },
+    getPackDetails () {
+      const baseUrl = 'http://192.168.0.122:5000/dash/packstatus'
+      const url = baseUrl + '?packid=' + this.packid
+      // console.log('--------url---------' + url)
+      axios({
+        url: url,
+        method: 'post'
+      }).then((res) => {
+        console.log(res.data)
+        this.status = res.data
+        const index = this.status.length - 1
+        this.packStatus = this.status[index]
+        if (this.packStatus.values.Status === 1) {
+          this.batStatus = '浮充'
+        } else if (this.packStatus.values.Status === 2) {
+          this.batStatus = '均充'
+        } else if (this.packStatus.values.Status === 3) {
+          this.batStatus = '放电'
+        }
+        this.TolVer = this.packStatus.values.TolVer
+        this.CellVer = this.packStatus.values.CellVer
+        this.debugDetail = this.packStatus.values.DebugDetail
+        this.time = toDate(this.packStatus.ts)
+        console.log('--------packStatus---------' + JSON.stringify(this.packStatus))
+      })
+    },
+    handleSizeChange (val) {
+      console.log(`每页 ${val} 条`)
+      this.listInfo.pagesize = val
+      console.log('---this.listInfo--' + JSON.stringify(this.listInfo))
+      this.getBatteryList()
+    },
+    handleCurrentChange (val) {
+      console.log(`当前页: ${val}`)
+      this.listInfo.pagenum = val - 1
+      this.dataIndex = (this.listInfo.pagenum * this.listInfo.pagesize) + 1
+      console.log('---this.listInfo--' + JSON.stringify(this.listInfo))
+      this.getBatteryList()
+    },
+    sensorDetails (val) {
+      // console.log(val.dev_id)
+      this.$router.push({
+        path: '/sensor/details',
+        query: {
+          packid: val.dev_id,
+          dev_num: val.dev_num,
+          dev_type: val.dev_type
+        }
+      })
+    },
     voltageChartInit () {
       this.voltageChart = echarts.init(document.getElementById('voltageCharts'))
       const option = {
@@ -580,5 +627,15 @@ body, html{
   border-radius: 20px;
   width:400px;
   background-color: transparent
+}
+/deep/ .el-pagination__total {
+  margin-right: 10px;
+  font-weight: 400;
+  color: white;
+}
+/deep/ .el-pagination__jump {
+  margin-left: 24px;
+  font-weight: 400;
+  color: white;
 }
 </style>

@@ -8,21 +8,20 @@
       </div>
       <div style="padding: 10px;float: left;width: 96%;height: 15%;">
         <div style="padding: 8px;float: left;width: 15%;height:85%;margin-right:10px;">
-<!--          <div style="margin-top: 15%;margin-left:10px;font-size: 25px;color: white">电池组编号</div>-->
-          <div style="font-size: 32px;color: #01FFFF;margin-top: 50px">实验室517</div>
+          <div style="font-size: 32px;color: #01FFFF;margin-top: 50px">{{ this.devNum }}</div>
         </div>
         <div style="padding: 8px;float: left;width: 35%;height:85%;margin-right:10px;">
           <el-row class="elRowBase4" :gutter="10">
             <el-col :span="12">型号</el-col>
-            <el-col :span="12" style="color: #01FFFF">GFM-200</el-col>
+            <el-col :span="12" style="color: #01FFFF">{{ this.devType }}</el-col>
           </el-row>
           <el-row class="elRowBase4" :gutter="10">
             <el-col :span="12">主控频率</el-col>
-            <el-col :span="12" style="color: #01FFFF">96</el-col>
+            <el-col :span="12" style="color: #01FFFF">{{ this.debugDetail }}</el-col>
           </el-row>
           <el-row class="elRowBase4" :gutter="10">
             <el-col :span="12">电池版本</el-col>
-            <el-col :span="12" style="color: #01FFFF">V1.0.5</el-col>
+            <el-col :span="12" style="color: #01FFFF">{{ this.tolVer }}</el-col>
           </el-row>
         </div>
         <div style="padding: 8px;float: left;width: 40%;height:90%;padding-bottom: 8px;border-top: 1px solid #01FFFF">
@@ -32,8 +31,8 @@
             <el-col :span="8">报警</el-col>
           </el-row>
           <el-row class="elRowBase3" :gutter="10">
-            <el-col :span="8" style="color: #01FFFF">328</el-col>
-            <el-col :span="8" style="color: #01FFFF">330</el-col>
+            <el-col :span="8" style="color: #01FFFF">{{ this.voltage }}</el-col>
+            <el-col :span="8" style="color: #01FFFF">{{ this.current }}</el-col>
             <el-col :span="8" style="color: #FF0000">10</el-col>
           </el-row>
           <el-row class="elRowBase1" :gutter="10" style="padding-bottom: 8px;border-bottom: 1px solid #01FFFF">
@@ -53,17 +52,17 @@
             <el-col :span="4" >在线状态</el-col>
             <el-col :span="2" >容量</el-col>
             <el-col :span="4" >备电时长</el-col>
-            <el-col :span="3" >SOH</el-col>
+            <el-col :span="3" >SOC</el-col>
             <el-col :span="3" >4G信号</el-col>
             <el-col :span="8" >信号采集时间</el-col>
           </el-row>
           <el-row class="elRowBase2" :gutter="10" style="padding-bottom: 8px;border-bottom: 1px solid #01FFFF">
-            <el-col :span="4" style="color: #FF0000">在线</el-col>
+            <el-col :span="4" style="color: #FF0000">{{ this.batStatus }}</el-col>
             <el-col :span="2" >100%</el-col>
             <el-col :span="4" >无</el-col>
-            <el-col :span="3">无</el-col>
-            <el-col :span="3" >31</el-col>
-            <el-col :span="8" >2021-09-30 14:07:32</el-col>
+            <el-col :span="3">{{ this.SOC }}</el-col>
+            <el-col :span="3" >{{ this.cellVer }}</el-col>
+            <el-col :span="8" >{{ this.time }}</el-col>
           </el-row>
         </div>
       </div>
@@ -93,37 +92,69 @@
         </el-row>
       </div>
       <div style="padding: 8px 10px 10px 40px;float: left;width: 96%;color: white">
-        <div v-for="item in Arr" :key="item.id" style="height: 135px;width: 21%;margin:20px;float: left">
+<!--        <div v-for="item in Arr" :key="item.id" style="height: 135px;width: 21%;margin:20px;float: left">-->
+<!--          &lt;!&ndash;        <p>{{item.id}}</p>&ndash;&gt;-->
+<!--          &lt;!&ndash;        <img src="../assets/battery/error.png">&ndash;&gt;-->
+<!--          <div style="padding: 0px 10px 10px 20px;float: left;">-->
+<!--            <div>-->
+<!--              <img src="../../assets/battery/100%.png">-->
+<!--            </div>-->
+<!--            <div style="font-size: 20px">{{item.id}}</div>-->
+<!--          </div>-->
+
+<!--          <div style="padding: 0px 10px 10px 0px;float: left;font-size: 20px">-->
+<!--            <div style="margin-bottom: 2px">-->
+<!--              <span>电压</span>-->
+<!--              <span style="margin-left: 20px;">{{ item.current }}V</span>-->
+<!--            </div>-->
+<!--            <div style="margin-bottom: 2px">-->
+<!--              <span>内阻</span>-->
+<!--              <span style="margin-left: 20px;">{{ item.internalResistance }}μΩ</span>-->
+<!--            </div>-->
+<!--            <div style="margin-bottom: 2px">-->
+<!--              <span>温度</span>-->
+<!--              <span style="margin-left: 20px;">{{ item.temperature }}℃</span>-->
+<!--            </div>-->
+<!--            <div style="margin-bottom: 2px">-->
+<!--              <span>报警类型</span>-->
+<!--              <span style="margin-left: 20px;">{{ item.alarmType }}</span>-->
+<!--            </div>-->
+<!--            <div style="margin-bottom: 2px">-->
+<!--              <span>报警等级</span>-->
+<!--              <span style="margin-left: 20px">{{ item.alarmType }}</span>-->
+<!--            </div>-->
+<!--          </div>-->
+        <div v-for="item in realtimeDetails" :key="item.dev_num" style="height: 135px;width: 21%;margin:20px;float: left">
           <!--        <p>{{item.id}}</p>-->
           <!--        <img src="../assets/battery/error.png">-->
           <div style="padding: 0px 10px 10px 20px;float: left;">
             <div>
               <img src="../../assets/battery/100%.png">
             </div>
-            <div style="font-size: 20px">{{item.id}}</div>
+            <div style="font-size: 20px">{{item.dev_num}}</div>
           </div>
 
-          <div style="padding: 0px 10px 10px 0px;float: left;font-size: 20px">
+          <div style="padding: 15px 10px 10px 0px;float: left;font-size: 20px">
             <div style="margin-bottom: 2px">
               <span>电压</span>
-              <span style="margin-left: 20px;">{{ item.current }}V</span>
+              <span style="margin-left: 20px;">{{ item.Volt }}V</span>
             </div>
             <div style="margin-bottom: 2px">
               <span>内阻</span>
-              <span style="margin-left: 20px;">{{ item.internalResistance }}μΩ</span>
+              <span style="margin-left: 20px;">{{ item.Res }}μΩ</span>
             </div>
             <div style="margin-bottom: 2px">
               <span>温度</span>
-              <span style="margin-left: 20px;">{{ item.temperature }}℃</span>
+              <span style="margin-left: 20px;">{{ item.Temp }}℃</span>
             </div>
-            <div style="margin-bottom: 2px">
-              <span>报警类型</span>
-              <span style="margin-left: 20px;">{{ item.alarmType }}</span>
-            </div>
-            <div style="margin-bottom: 2px">
-              <span>报警等级</span>
-              <span style="margin-left: 20px">{{ item.alarmType }}</span>
-            </div>
+<!--            <div style="margin-bottom: 2px">-->
+<!--              <span>报警类型</span>-->
+<!--              <span style="margin-left: 20px;">{{ item.alarmType }}</span>-->
+<!--            </div>-->
+<!--            <div style="margin-bottom: 2px">-->
+<!--              <span>报警等级</span>-->
+<!--              <span style="margin-left: 20px">{{ item.alarmType }}</span>-->
+<!--            </div>-->
           </div>
         </div>
 <!--        <div style="padding: 0px 10px 10px 20px;float: left;">-->
@@ -162,45 +193,94 @@
 </template>
 
 <script>
+import axios from 'axios'
+import { toDate } from '@/network/time'
+
 const echarts = require('echarts')
 export default {
   name: 'sensorDetails',
   data () {
     return {
       alarmLevelChart: null,
-      Arr: [
-        { id: '001', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '002', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '003', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '004', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '005', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '006', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '007', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '008', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '009', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '010', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '011', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '012', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '013', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '014', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '015', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '016', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '017', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '018', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '019', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '020', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '021', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '022', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '023', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 },
-        { id: '024', voltage: 12, current: 24, internalResistance: 1.3, temperature: 26, alarmType: '无', alarmLeve: 3 }
-      ]
+      packid: '',
+      devNum: '0',
+      packDetails: '',
+      realtimeDetails: '',
+      batStatus: '0',
+      devType: '0',
+      tolVer: '0',
+      cellVer: '0',
+      debugDetail: '0',
+      time: '0',
+      voltage: '0',
+      current: '0',
+      SOC: '0'
     }
   },
   mounted () {
     this.alarmType()
     this.alarmLevel()
+    this.packid = this.$route.query.packid
+    this.devNum = this.$route.query.dev_num
+    this.devType = this.$route.query.dev_type
+    // this.getPackdetail()
+    this.getPackStatus()
+    this.getRealtimeDetail()
   },
   methods: {
+    getPackdetail () {
+      const baseUrl = 'http://192.168.0.122:5000/dash/packdetail'
+      const url = baseUrl + '?packid=' + this.packid
+      console.log('--------url---------' + url)
+      axios({
+        url: url,
+        method: 'post'
+      }).then((res) => {
+        this.packDetails = res.data
+        console.log('----------packDetails---------------' + JSON.stringify(this.packDetails))
+      })
+    },
+    getPackStatus () {
+      const baseUrl = 'http://192.168.0.122:5000/dash/packstatus'
+      const url = baseUrl + '?packid=' + this.packid
+      // console.log('--------url---------' + url)
+      axios({
+        url: url,
+        method: 'post'
+      }).then((res) => {
+        console.log(res.data)
+        this.status = res.data
+        const index = this.status.length - 1
+        this.packStatus = this.status[index]
+        if (this.packStatus.values.Status === 1) {
+          this.batStatus = '浮充'
+        } else if (this.packStatus.values.Status === 2) {
+          this.batStatus = '均充'
+        } else if (this.packStatus.values.Status === 3) {
+          this.batStatus = '放电'
+        }
+        this.tolVer = this.packStatus.values.TolVer
+        this.cellVer = this.packStatus.values.CellVer
+        this.debugDetail = this.packStatus.values.DebugDetail
+        this.time = toDate(this.packStatus.ts)
+        this.voltage = this.packStatus.values.TolVolt
+        this.current = this.packStatus.values.TolCur
+        this.SOC = this.packStatus.values.Soc
+        console.log('--------packStatus---------' + JSON.stringify(this.packStatus))
+      })
+    },
+    getRealtimeDetail () {
+      const baseUrl = 'http://192.168.0.122:5000/dash/realtime'
+      const url = baseUrl + '?packid=' + this.packid
+      console.log('--------url---------' + url)
+      axios({
+        url: url,
+        method: 'post'
+      }).then((res) => {
+        this.realtimeDetails = res.data
+        console.log('----------realtimeDetails---------------' + JSON.stringify(this.realtimeDetails))
+      })
+    },
     alarmType () {
       let angle = 0// 角度，用来做简单的动画效果的
       const value = 40

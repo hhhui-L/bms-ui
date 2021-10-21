@@ -66,6 +66,15 @@ const routes = [
         }
       },
       {
+        path: '/alarm/manage',
+        name: '报警管理',
+        component: () => import('../views/systemManage/alarmManage'),
+        meta: {
+          title: '报警管理',
+          requireAuth: true
+        }
+      },
+      {
         path: '/device/controller',
         name: '控制器管理',
         component: () => import('../views/deviceManage/controllerManage'),

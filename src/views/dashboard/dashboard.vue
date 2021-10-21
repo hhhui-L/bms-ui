@@ -138,7 +138,7 @@
               <p style="margin: 0px">在线数量</p>
             </div>
           </div>
-          <div style="width: 39px;height: 150px; border-left: 1px solid #008b9a;float: left;" @click="toClient()">
+          <div style="width: 39px;height: 150px; border-left: 1px solid #008b9a;float: left;" @click="toPacklist()">
             <i class="el-icon-arrow-right" style="margin-top: 60px"></i>
           </div>
         </div>
@@ -211,7 +211,7 @@ export default {
     //     query: { lesseeCompanyId: id }
     //   })
     // },
-    toClient () {
+    toPacklist () {
       this.$router.push({
         path: '/battery/details'
       })

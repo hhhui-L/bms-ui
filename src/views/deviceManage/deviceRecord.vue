@@ -56,7 +56,12 @@
       <el-table-column label="公司名称" min-width="150px" prop="corp_name" align="center"></el-table-column>
       <el-table-column label="id" v-if="false" min-width="150px" prop="id" align="center"></el-table-column>
       <el-table-column label="设备类型" min-width="150px" prop="dev_type" align="center"></el-table-column>
-      <el-table-column label="调试状态" min-width="150px" prop="dev_debug" align="center"></el-table-column>
+      <el-table-column label="调试状态" min-width="150px" prop="dev_debug" align="center">
+        <template slot-scope="scope">
+          <span v-if="scope.row.dev_debug == false">非调试</span>
+          <span v-else>调试</span>
+        </template>
+      </el-table-column>
       <el-table-column label="设备编号" min-width="150px" prop="dev_num" align="center"></el-table-column>
       <el-table-column label="控制器编号" min-width="200px" prop="ctrl_num" align="center"></el-table-column>
       <el-table-column label="创建时间" min-width="200px" prop="create_time" align="center"></el-table-column>
@@ -76,6 +81,7 @@
           <el-button
             size="mini"
             type="primary"
+            v-if="scope.row.dev_type === '电池组'"
             @click="handleDetails(scope.row)">详情</el-button>
         </template>
       </el-table-column>
@@ -592,6 +598,16 @@ export default {
       })
       this.dialogVisibleDelete = false
     },
+    handleDetails (val) {
+      this.$router.push({
+        path: '/sensor/details',
+        query: {
+          packid: val.dev_id,
+          dev_num: val.dev_num,
+          dev_type: val.dev_type
+        }
+      })
+    },
     exportExcel () {
       // this.htmlToExcels.exportExcel('控制器管理.xlsx', '#devctrlManage')
       const excelData = this.devctrlTable // 将你要导出的数组数据（historyList）赋值给excelDate
@@ -606,7 +622,7 @@ export default {
         'create_time',
         'dev_id',
         'bat_model',
-        'dev_sn',
+        'dev_sn'
       ] // 导出的excel表头字段名，需要导出表格字段名
       const title = '设备档案'
       this.htmlToExcels.export2Excel(excelData, tHeader, filterVal, title) // 调用export2Excel函数，填写表头（clomns里的type）和对应字段(historyList里的属性名)

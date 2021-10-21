@@ -28,7 +28,10 @@
                 <i class="el-icon-user"></i>
                 <span slot="title">用户管理</span>
               </el-menu-item>
-
+              <el-menu-item index="/alarm/manage">
+                <i class="el-icon-guide"></i>
+                <span slot="title">报警管理</span>
+              </el-menu-item>
             </el-submenu>
 
             <el-submenu index="2">
@@ -56,14 +59,14 @@
                 <i class="el-icon-coordinate"></i>
                 <span slot="title">站点管理</span>
               </el-menu-item>
-              <el-menu-item index="/device/maintenanceRecord">
-                <i class="el-icon-document"></i>
-                <span slot="title">设备维护历史记录</span>
-              </el-menu-item>
-              <el-menu-item index="/currentexp">
-                <i class="el-icon-guide"></i>
-                <span slot="title">当前实验</span>
-              </el-menu-item>
+<!--              <el-menu-item index="/device/maintenanceRecord">-->
+<!--                <i class="el-icon-document"></i>-->
+<!--                <span slot="title">设备维护历史记录</span>-->
+<!--              </el-menu-item>-->
+<!--              <el-menu-item index="/currentexp">-->
+<!--                <i class="el-icon-guide"></i>-->
+<!--                <span slot="title">当前实验</span>-->
+<!--              </el-menu-item>-->
             </el-submenu>
             <el-submenu index="3">
               <template slot="title">
@@ -113,10 +116,10 @@
               <i class="el-icon-document"></i>
               <span slot="title">工艺设置</span>
             </el-menu-item>
-            <el-menu-item index="/expdata">
-              <i class="el-icon-setting"></i>
-              <span slot="title">实验数据</span>
-            </el-menu-item>
+<!--            <el-menu-item index="/expdata">-->
+<!--              <i class="el-icon-setting"></i>-->
+<!--              <span slot="title">实验数据</span>-->
+<!--            </el-menu-item>-->
             <el-menu-item index="/battery/details">
               <i class="el-icon-setting"></i>
               <span slot="title">电池组详情</span>
