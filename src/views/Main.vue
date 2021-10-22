@@ -68,28 +68,28 @@
 <!--                <span slot="title">当前实验</span>-->
 <!--              </el-menu-item>-->
             </el-submenu>
-            <el-submenu index="3">
-              <template slot="title">
-                <i class="el-icon-data-analysis"></i>
-                <span slot="title">设备控制</span>
-              </template>
-              <el-menu-item index="/command/manage">
-                <i class="el-icon-chat-dot-round"></i>
-                <span slot="title">指令管理</span>
-              </el-menu-item>
-              <el-menu-item index="/command/send">
-                <i class="el-icon-s-promotion"></i>
-                <span slot="title">指令下发</span>
-              </el-menu-item>
-              <el-menu-item index="/operation/record">
-                <i class="el-icon-s-order"></i>
-                <span slot="title">指令操作记录</span>
-              </el-menu-item>
-              <el-menu-item index="/send/record">
-                <i class="el-icon-s-claim"></i>
-                <span slot="title">指令发送记录</span>
-              </el-menu-item>
-            </el-submenu>
+<!--            <el-submenu index="3">-->
+<!--              <template slot="title">-->
+<!--                <i class="el-icon-data-analysis"></i>-->
+<!--                <span slot="title">设备控制</span>-->
+<!--              </template>-->
+<!--              <el-menu-item index="/command/manage">-->
+<!--                <i class="el-icon-chat-dot-round"></i>-->
+<!--                <span slot="title">指令管理</span>-->
+<!--              </el-menu-item>-->
+<!--              <el-menu-item index="/command/send">-->
+<!--                <i class="el-icon-s-promotion"></i>-->
+<!--                <span slot="title">指令下发</span>-->
+<!--              </el-menu-item>-->
+<!--              <el-menu-item index="/operation/record">-->
+<!--                <i class="el-icon-s-order"></i>-->
+<!--                <span slot="title">指令操作记录</span>-->
+<!--              </el-menu-item>-->
+<!--              <el-menu-item index="/send/record">-->
+<!--                <i class="el-icon-s-claim"></i>-->
+<!--                <span slot="title">指令发送记录</span>-->
+<!--              </el-menu-item>-->
+<!--            </el-submenu>-->
             <el-submenu index="3">
               <template slot="title">
                 <i class="el-icon-data-analysis"></i>
@@ -99,23 +99,23 @@
                 <i class="el-icon-data-line"></i>
                 <span slot="title">历史数据查询</span>
               </el-menu-item>
-              <el-menu-item index="/alarm/query">
-                <i class="el-icon-star-on"></i>
-                <span slot="title">报警信息查询</span>
-              </el-menu-item>
-              <el-menu-item index="/site/alarm">
-                <i class="el-icon-star-off"></i>
-                <span slot="title">站点报警统计</span>
-              </el-menu-item>
+<!--              <el-menu-item index="/alarm/query">-->
+<!--                <i class="el-icon-star-on"></i>-->
+<!--                <span slot="title">报警信息查询</span>-->
+<!--              </el-menu-item>-->
+<!--              <el-menu-item index="/site/alarm">-->
+<!--                <i class="el-icon-star-off"></i>-->
+<!--                <span slot="title">站点报警统计</span>-->
+<!--              </el-menu-item>-->
             </el-submenu>
-            <el-menu-item index="/bms">
-              <i class="el-icon-s-data"></i>
-              <span slot="title">电池监测</span>
-            </el-menu-item>
-            <el-menu-item index="/setting">
-              <i class="el-icon-document"></i>
-              <span slot="title">工艺设置</span>
-            </el-menu-item>
+<!--            <el-menu-item index="/bms">-->
+<!--              <i class="el-icon-s-data"></i>-->
+<!--              <span slot="title">电池监测</span>-->
+<!--            </el-menu-item>-->
+<!--            <el-menu-item index="/setting">-->
+<!--              <i class="el-icon-document"></i>-->
+<!--              <span slot="title">工艺设置</span>-->
+<!--            </el-menu-item>-->
 <!--            <el-menu-item index="/expdata">-->
 <!--              <i class="el-icon-setting"></i>-->
 <!--              <span slot="title">实验数据</span>-->
@@ -128,10 +128,10 @@
               <i class="el-icon-setting"></i>
               <span slot="title">电池单体详情</span>
             </el-menu-item>
-            <el-menu-item index="/test">
-              <i class="el-icon-setting"></i>
-              <span slot="title">test</span>
-            </el-menu-item>
+<!--            <el-menu-item index="/test">-->
+<!--              <i class="el-icon-setting"></i>-->
+<!--              <span slot="title">test</span>-->
+<!--            </el-menu-item>-->
           </el-menu>
         </el-aside>
       <el-container>

@@ -1,88 +1,93 @@
 <template>
   <div style="padding: 10px">
-    <el-row :gutter="10" style="margin-bottom: 10px">
-      <el-col :span="2">
-        <el-input
-          v-model="findDevtype.corpname"
-          placeholder="请输入公司名称"
-        />
-      </el-col>
-      <el-col :span="2">
-        <el-input
-          v-model="findDevtype.typename"
-          placeholder="请输入设备类型"
-        />
-      </el-col>
-      <el-col :span="8">
-        <el-button type="primary" icon="el-icon-search" @click="conditionQuery">查询</el-button>
-        <el-button type="primary" icon="el-icon-add-location" @click="dialogFormAdd = true">添加</el-button>
-        <el-button type="warning" icon="el-icon-delete" @click="clearCondition">清空</el-button>
-      </el-col>
-    </el-row>
+<!--    <el-row :gutter="10" style="margin-bottom: 10px">-->
+<!--      <el-col :span="2">-->
+<!--        <el-input-->
+<!--          v-model="findDevtype.corpname"-->
+<!--          placeholder="请输入公司名称"-->
+<!--        />-->
+<!--      </el-col>-->
+<!--      <el-col :span="2">-->
+<!--        <el-input-->
+<!--          v-model="findDevtype.typename"-->
+<!--          placeholder="请输入设备类型"-->
+<!--        />-->
+<!--      </el-col>-->
+<!--      <el-col :span="8">-->
+<!--        <el-button type="primary" icon="el-icon-search" @click="conditionQuery">查询</el-button>-->
+<!--        <el-button type="primary" icon="el-icon-add-location" @click="dialogFormAdd = true">添加</el-button>-->
+<!--        <el-button type="warning" icon="el-icon-delete" @click="clearCondition">清空</el-button>-->
+<!--      </el-col>-->
+<!--    </el-row>-->
 
     <el-row :gutter="10" style="margin-bottom: 10px">
-      <el-col :span="2">
-        <el-input
-          v-model="findDevtype.corpname"
-          placeholder="请输入公司名称"
-        />
-      </el-col>
-      <el-col :span="2">
-        <el-input
-          v-model="findDevtype.corpname"
-          placeholder="请输入线路名称"
-        />
-      </el-col>
-<!--      <el-col :span="4">-->
-<!--        <el-select v-model="queryExpHisBean.line" placeholder="请选择">-->
-<!--          <el-option-->
-<!--          &lt;!&ndash;            v-for="item in line"&ndash;&gt;-->
-<!--          &lt;!&ndash;            :key="item.value"&ndash;&gt;-->
-<!--          &lt;!&ndash;            :label="item.label"&ndash;&gt;-->
-<!--          &lt;!&ndash;            :value="item.value"&ndash;&gt;-->
-<!--          />-->
-<!--        </el-select>-->
+<!--      <el-col :span="2">-->
+<!--        <el-input-->
+<!--          v-model="findDevtype.corpname"-->
+<!--          placeholder="请输入公司名称"-->
+<!--        />-->
 <!--      </el-col>-->
-<!--      <el-col :span="4">-->
-<!--        <el-select v-model="queryExpHisBean.line" placeholder="请选择">-->
-<!--          <el-option-->
-<!--          &lt;!&ndash;            v-for="item in line"&ndash;&gt;-->
-<!--          &lt;!&ndash;            :key="item.value"&ndash;&gt;-->
-<!--          &lt;!&ndash;            :label="item.label"&ndash;&gt;-->
-<!--          &lt;!&ndash;            :value="item.value"&ndash;&gt;-->
-<!--          />-->
-<!--        </el-select>-->
+<!--      <el-col :span="2">-->
+<!--        <el-input-->
+<!--          v-model="findDevtype.corpname"-->
+<!--          placeholder="请输入线路名称"-->
+<!--        />-->
 <!--      </el-col>-->
       <el-col :span="2">
-        <el-select placeholder="状态">
+        <el-select v-model="queryInfo.cid" placeholder="请选择报警类型">
           <el-option
-            v-for="item in status"
+            v-for="item in batteryId"
             :key="item.value"
             :label="item.label"
             :value="item.value"
           />
         </el-select>
       </el-col>
-      <el-col :span="4">
-        <el-date-picker
-          v-model="timeRange"
-          type="datetimerange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+      <el-col :span="2">
+        <el-input
+          v-model="queryInfo.time"
+          placeholder="请输入公司名称"
         />
+<!--      <el-date-picker-->
+<!--        v-model="queryInfo.time"-->
+<!--        type="datetime"-->
+<!--        placeholder="选择日期时间"-->
+<!--        default-time="12:00:00"-->
+<!--        value-format="yyyy-MM-dd"-->
+<!--      >-->
+<!--      </el-date-picker>-->
       </el-col>
+<!--      <el-col :span="2">-->
+<!--        <el-select placeholder="状态">-->
+<!--          <el-option-->
+<!--            v-for="item in status"-->
+<!--            :key="item.value"-->
+<!--            :label="item.label"-->
+<!--            :value="item.value"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--      </el-col>-->
+
+<!--      <el-col :span="4">-->
+<!--        <el-date-picker-->
+<!--          v-model="timeRange"-->
+<!--          type="datetimerange"-->
+<!--          range-separator="至"-->
+<!--          start-placeholder="开始日期"-->
+<!--          end-placeholder="结束日期"-->
+<!--        />-->
+<!--      </el-col>-->
       <el-col :span="6">
         <el-button type="primary" icon="el-icon-search" @click="conditionQuery">查询</el-button>
-        <el-button type="warning" icon="el-icon-delete" @click="clearCondition">清空</el-button>
-        <el-button type="primary" icon="el-icon-s-order" @click="exportExcel">导出</el-button>
+<!--        <el-button type="warning" icon="el-icon-delete" @click="clearCondition">清空</el-button>-->
+<!--        <el-button type="primary" icon="el-icon-s-order" @click="exportExcel">导出</el-button>-->
       </el-col>
     </el-row>
     <el-row :gutter="10" style="margin-bottom: 10px">
     </el-row>
 
     <el-table
-      :data="devTypeTable"
+      :data="recordListTable"
       border
       stripe
       fit
@@ -101,137 +106,44 @@
       <el-table-column label="id" v-if="false" min-width="150px" prop="id" align="center"></el-table-column>
 <!--      <el-table-column label="公司名称" min-width="150px" prop="corp_name" align="center"></el-table-column>-->
 <!--      <el-table-column label="类型名称" min-width="150px" prop="type_name" align="center"></el-table-column>-->
-<!--      <el-table-column label="创建时间" min-width="200px" prop="create_time" align="center"></el-table-column>-->
-      <el-table-column label="采集时间" min-width="150px" prop="name"></el-table-column>
-      <el-table-column label="电池编号" min-width="150px" prop="date"></el-table-column>
-      <el-table-column label="型号" min-width="150px" prop="batType"></el-table-column>
-      <el-table-column label="总电压(V)" min-width="200px" prop="expType"></el-table-column>
-      <el-table-column label="总电流(A)" min-width="200px" prop="voltageH"></el-table-column>
-      <el-table-column label="状态" min-width="200px" prop="voltageL"></el-table-column>
-      <el-table-column label="容量(%)" min-width="200px" prop="current"></el-table-column>
-      <el-table-column label="电池电压(V)" min-width="200px" prop="current"></el-table-column>
-      <el-table-column label="内阻(μΩ)" min-width="200px" prop="current"></el-table-column>
-      <el-table-column label="温度(℃)" min-width="200px" prop="current"></el-table-column>
-      <el-table-column label="能耗(WH)" min-width="200px" prop="current"></el-table-column>
+<!--      <el-table-column label="采集时间" min-width="150px" prop="name"></el-table-column>-->
+      <el-table-column label="电池编号" min-width="200px" prop="clientid" align="center"></el-table-column>
+      <el-table-column label="创建时间" min-width="200px" prop="ts" align="center"></el-table-column>
+      <!--      <el-table-column label="型号" min-width="150px" prop="batType"></el-table-column>-->
+      <el-table-column label="总电压(V)" min-width="200px" prop="Vol" align="center"></el-table-column>
+<!--      <el-table-column label="总电流(A)" min-width="200px" prop="voltageL"></el-table-column>-->
+<!--      <el-table-column label="状态" min-width="200px" prop="voltageL"></el-table-column>-->
+<!--      <el-table-column label="容量(%)" min-width="200px" prop="current"></el-table-column>-->
+<!--      <el-table-column label="电池电压(V)" min-width="200px" prop="current"></el-table-column>-->
+      <el-table-column label="内阻(μΩ)" min-width="200px" prop="Res" align="center"></el-table-column>
+      <el-table-column label="温度(℃)" min-width="200px" prop="Temp" align="center"></el-table-column>
+<!--      <el-table-column label="能耗(WH)" min-width="200px" prop="current"></el-table-column>-->
     </el-table>
 
-    <el-pagination
-      :page-sizes="pageSizeList"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="totalCount"
-      align="right"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
-
-    <el-dialog title="添加设备类型" :visible.sync="dialogFormAdd" width="25%">
-      <el-form :model="devTypeFormAdd" :rules="rules" ref="ruleForm">
-        <el-form-item label="公司名称" prop="corpName" :label-width="formLabelWidth">
-          <el-input v-model="devTypeFormAdd.corpName"></el-input>
-        </el-form-item>
-        <el-form-item label="类型名称" prop="typeName" :label-width="formLabelWidth">
-          <el-input v-model="devTypeFormAdd.typeName"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormAdd = false">取 消</el-button>
-        <!--        dialogFormAdd = false-->
-        <el-button type="primary" @click="submitdevTypeAdd('ruleForm')">添 加</el-button>
-      </div>
-    </el-dialog>
-
-    <el-dialog title="修改设备类型" :visible.sync="dialogFormEdit" width="25%">
-      <el-form :model="devTypeFormEdit" :rules="rulesEdit" ref="ruleFormEdit">
-        <el-form-item label="公司名称" prop="corp_name" :label-width="formLabelWidth">
-          <el-input type="text" v-model="devTypeFormEdit.corp_name"></el-input>
-        </el-form-item>
-        <el-form-item label="类型名称" prop="type_name" :label-width="formLabelWidth">
-          <el-input type="text" v-model="devTypeFormEdit.type_name"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormEdit = false">取 消</el-button>
-        <!--        dialogFormAdd = false-->
-        <el-button type="primary" @click="updateDevtype('ruleFormEdit')">确 定</el-button>
-      </div>
-    </el-dialog>
-
-    <el-dialog
-      title="提示"
-      :visible.sync="dialogVisibleDelete"
-      width="30%"
-    >
-      <span style="font-size: 20px">确定要进行删除吗？</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogVisibleDelete = false">取 消</el-button>
-        <el-button type="danger" @click="doDelete">确 定</el-button>
-      </span>
-    </el-dialog>
+<!--    <el-pagination-->
+<!--      :page-sizes="pageSizeList"-->
+<!--      layout="total, sizes, prev, pager, next, jumper"-->
+<!--      :total="totalCount"-->
+<!--      align="right"-->
+<!--      @size-change="handleSizeChange"-->
+<!--      @current-change="handleCurrentChange"-->
+<!--    />-->
 
   </div>
 </template>
 
 <script>
-import { addDevtype, deleteDevtype, getDevtype, updateDevtype } from '@/network/devType'
-import { formatDate } from '@/network/time'
+
+import axios from 'axios'
 
 export default {
   name: 'type',
   data () {
     return {
-      devTypeTable: [
-      ],
-      dialogFormAdd: false,
-      dialogFormEdit: false,
-      dialogVisibleDelete: false,
-      findDevtype: {
-        corpname: '',
-        typename: '',
-        pagenum: '0', // 当前页数
-        pagesize: '10' // 每页条目数
-      },
-      devTypeFormAdd: {
-        corpName: '',
-        typeName: ''
-      },
-      devTypeFormEdit: {
-        corp_name: '',
-        type_name: ''
-      },
-      rules: {
-        corpName: [
-          { required: true, message: '请输入公司名称', trigger: 'blur' }
-        ],
-        typeName: [
-          { required: true, message: '请输入设备类型名称', trigger: 'blur' }
-        ]
-      },
-      rulesEdit: {
-        corp_name: [
-          { required: true, message: '请输入公司名称', trigger: 'blur' }
-        ],
-        type_name: [
-          { required: true, message: '请输入设备类型名称', trigger: 'blur' }
-        ]
-      },
-      formLabelWidth: '120px',
-      devTypeAdd: {
-        corp_name: '',
-        create_time: '',
-        type_name: '',
-        id: ''
-      },
-      devTypeUpdate: {
-        corp_name: '',
-        create_time: '',
-        type_name: '',
-        id: ''
-      },
-      devTypeDelete: {
-        corp_name: '',
-        create_time: '',
-        type_name: '',
-        id: ''
+      recordListTable: [],
+      queryInfo: {
+        cid: 'battery101',
+        time: '20211020'
       },
       totalCount: 400, // 总条目数
       pageSizeList: [10, 20, 50, 100], // 选择每页显示个数
@@ -260,105 +172,108 @@ export default {
         value: 'standing',
         label: '浮充'
       }],
+      batteryId: [{
+        value: 'battery101',
+        label: '电池001'
+      }, {
+        value: 'battery102',
+        label: '电池002'
+      }, {
+        value: 'battery103',
+        label: '电池003'
+      }, {
+        value: 'battery104',
+        label: '电池004'
+      }, {
+        value: 'battery105',
+        label: '电池005'
+      }, {
+        value: 'battery106',
+        label: '电池006'
+      }, {
+        value: 'battery107',
+        label: '电池007'
+      }, {
+        value: 'battery108',
+        label: '电池008'
+      }, {
+        value: 'battery109',
+        label: '电池009'
+      }, {
+        value: 'battery110',
+        label: '电池010'
+      }, {
+        value: 'battery111',
+        label: '电池011'
+      }, {
+        value: 'battery112',
+        label: '电池012'
+      }, {
+        value: 'battery113',
+        label: '电池013'
+      }, {
+        value: 'battery114',
+        label: '电池014'
+      }, {
+        value: 'battery115',
+        label: '电池015'
+      }, {
+        value: 'battery116',
+        label: '电池016'
+      }, {
+        value: 'battery117',
+        label: '电池017'
+      }, {
+        value: 'battery118',
+        label: '电池018'
+      }, {
+        value: 'battery119',
+        label: '电池019'
+      }, {
+        value: 'battery120',
+        label: '电池020'
+      }, {
+        value: 'battery121',
+        label: '电池021'
+      }, {
+        value: 'battery122',
+        label: '电池022'
+      }, {
+        value: 'battery123',
+        label: '电池023'
+      }, {
+        value: 'battery124',
+        label: '电池024'
+      }],
       timeRange: null
     }
   },
   mounted () {
-    this.getDevtype()
+    this.getRecord()
   },
   methods: {
-    submitdevTypeAdd (formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.devTypeAdd.corp_name = this.devTypeFormAdd.corpName
-          this.devTypeAdd.type_name = this.devTypeFormAdd.typeName
-          this.devTypeAdd.create_time = formatDate()
-          console.log('---this.devTypeAdd--' + JSON.stringify(this.devTypeAdd))
-          addDevtype(this.devTypeAdd).then(res => {
-            console.log('-----' + res.data)
-            if (res.data === 'success') {
-              alert('添加成功!')
-              this.dialogFormAdd = false
-              this.getDevtype()
-            } else {
-              alert('添加失败!')
-              this.dialogFormAdd = false
-            }
-          }).catch(res => {
-            console.log(res.data)
-          })
-        } else {
-          console.log('error submit!!')
-          return false
+    getRecord () {
+      console.log(this.queryInfo.cid)
+      console.log(this.queryInfo.time)
+      const baseUrl = 'http://192.168.0.110:5000/findbycidandtime'
+      axios({
+        url: baseUrl,
+        method: 'get',
+        params: {
+          cid: this.queryInfo.cid,
+          time: this.queryInfo.time
         }
+      }).then((res) => {
+        console.log(JSON.stringify(res.data.data))
+        this.recordListTable = res.data.data
       })
-    },
-    updateDevtype (formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.devTypeUpdate.corp_name = this.devTypeFormEdit.corp_name
-          this.devTypeUpdate.type_name = this.devTypeFormEdit.type_name
-          this.devTypeUpdate.create_time = formatDate()
-          this.devTypeUpdate.id = this.devTypeFormEdit.id
-          console.log('---this.devTypeUpdate--' + JSON.stringify(this.devTypeUpdate))
-
-          updateDevtype(this.devTypeUpdate).then(res => {
-            console.log('-----' + res.data)
-            if (res.data === 'success') {
-              this.getDevtype()
-              alert('修改成功!')
-              this.dialogFormEdit = false
-            } else {
-              alert('修改失败!')
-              this.dialogFormEdit = false
-            }
-          }).catch(res => {
-            console.log('-----' + res.data)
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    },
-    // 获取数据
-    getDevtype () {
-      getDevtype(this.findDevtype).then(res => {
-        console.log('---this.findDevtype--' + JSON.stringify(this.findDevtype))
-        console.log('-----' + JSON.stringify(res.data))
-        this.devTypeTable = res.data.content
-        this.totalCount = res.data.totalElements
-      }).catch(res => {
-        console.log(res.data)
-      })
-    },
-    handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
-      this.findDevtype.pagesize = val
-      console.log('---this.findDevtype--' + JSON.stringify(this.findDevtype))
-      this.getDevtype()
-    },
-    handleCurrentChange (val) {
-      console.log(`当前页: ${val}`)
-      this.findDevtype.pagenum = val - 1
-      this.dataIndex = (this.findDevtype.pagenum * this.findDevtype.pagesize) + 1
-      console.log('---this.findDevtype--' + JSON.stringify(this.findDevtype))
-      this.getDevtype()
     },
     conditionQuery () {
-      console.log('-----' + JSON.stringify(this.findDevtype))
-      this.getDevtype()
+      this.getRecord()
     },
     clearCondition () {
       this.findDevtype.corpname = ''
       this.findDevtype.typename = ''
-    },
-    handleEdit (val) {
-      console.log(val.id)
-      this.dialogFormEdit = true
-      this.devTypeFormEdit.corp_name = val.corp_name
-      this.devTypeFormEdit.type_name = val.type_name
-      this.devTypeFormEdit.id = val.id
     },
     exportExcel () {
       // this.htmlToExcels.exportExcel('控制器管理.xlsx', '#devctrlManage')
@@ -378,29 +293,6 @@ export default {
       ] // 导出的excel表头字段名，需要导出表格字段名
       const title = '设备历史数据'
       this.htmlToExcels.export2Excel(excelData, tHeader, filterVal, title) // 调用export2Excel函数，填写表头（clomns里的type）和对应字段(historyList里的属性名)
-    },
-    handleDelete (val) {
-      this.devTypeDelete.corp_name = val.corp_name
-      this.devTypeDelete.create_time = val.create_time
-      this.devTypeDelete.type_name = val.type_name
-      this.devTypeDelete.id = val.id
-      console.log('---this.devTypeDelete--' + JSON.stringify(this.devTypeDelete))
-      this.dialogVisibleDelete = true
-    },
-    doDelete () {
-      console.log('---this.devTypeDelete--' + JSON.stringify(this.devTypeDelete))
-      deleteDevtype(this.devTypeDelete).then(res => {
-        console.log('-----' + res.data)
-        if (res.data === 'success') {
-          this.getDevtype()
-          alert('删除成功!')
-          this.dialogVisibleDelete = false
-        } else {
-          alert('删除失败!')
-          this.dialogVisibleDelete = false
-        }
-      })
-      this.dialogVisibleDelete = false
     }
   }
 }

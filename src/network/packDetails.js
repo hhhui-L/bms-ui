@@ -44,3 +44,29 @@ export function getRealtime (data) {
     data
   })
 }
+
+// 获取电压、电流、SOC
+export function getChartData (data) {
+  return request({
+    url: '/findbycid',
+    method: 'get',
+    params: data
+  })
+}
+
+// export function getExpRecordExcel(data) {
+//   return myrequest({
+//     url: '/api/v1/experiment/getExpRecordExcel',
+//     method: 'get',
+//     params: data
+//   })
+// }
+
+// 根据cid和time获取历史数据
+export function getRecordList (data) {
+  return request({
+    url: '/findbycidandtime',
+    method: 'get',
+    params: data
+  })
+}

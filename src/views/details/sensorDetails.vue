@@ -129,12 +129,19 @@
           <!--        <img src="../assets/battery/error.png">-->
           <div style="padding: 0px 10px 10px 20px;float: left;">
             <div>
-              <img src="../../assets/battery/100%.png">
+              <template>
+                  <img v-if="item.Soh < 0.16" src="../../assets/battery/100%.png">
+                  <img v-else-if="0.16 <= item.Soh && item.Soh < 0.2" src="../../assets/battery/80%.png">
+                  <img v-else-if="0.2 <= item.Soh && item.Soh < 0.4" src="../../assets/battery/60%.png">
+                  <img v-else-if="0.4 <= item.Soh && item.Soh < 0.6" src="../../assets/battery/40%.png">
+                  <img v-else-if="0.6 <= item.Soh && item.Soh < 0.8" src="../../assets/battery/20%.png">
+                  <img v-else src="../../assets/battery/error.png">
+              </template>
             </div>
             <div style="font-size: 20px">{{item.dev_num}}</div>
           </div>
 
-          <div style="padding: 15px 10px 10px 0px;float: left;font-size: 20px">
+          <div style="padding: 6px 10px 10px 0px;float: left;font-size: 20px">
             <div style="margin-bottom: 2px">
               <span>电压</span>
               <span style="margin-left: 20px;">{{ item.Volt }}V</span>
@@ -147,10 +154,15 @@
               <span>温度</span>
               <span style="margin-left: 20px;">{{ item.Temp }}℃</span>
             </div>
-<!--            <div style="margin-bottom: 2px">-->
-<!--              <span>报警类型</span>-->
+            <div style="margin-bottom: 2px">
+              <span v-if="item.Soh < 0.8">健康状态</span>
+              <span style="color: red" v-else>健康状态</span>
+              <template>
+                <span style="margin-left: 20px;" v-if="item.Soh < 0.8">健康</span>
+                <span style="margin-left: 20px;color: red" v-else>报警</span>
+              </template>
 <!--              <span style="margin-left: 20px;">{{ item.alarmType }}</span>-->
-<!--            </div>-->
+            </div>
 <!--            <div style="margin-bottom: 2px">-->
 <!--              <span>报警等级</span>-->
 <!--              <span style="margin-left: 20px">{{ item.alarmType }}</span>-->
@@ -229,7 +241,8 @@ export default {
   },
   methods: {
     getPackdetail () {
-      const baseUrl = 'http://192.168.0.122:5000/dash/packdetail'
+      // const baseUrl = 'http://192.168.0.122:5000/dash/packdetail'
+      const baseUrl = 'http://192.168.0.110:5000/dash/packdetail'
       const url = baseUrl + '?packid=' + this.packid
       console.log('--------url---------' + url)
       axios({
@@ -270,16 +283,40 @@ export default {
       })
     },
     getRealtimeDetail () {
-      const baseUrl = 'http://192.168.0.122:5000/dash/realtime'
+      // const baseUrl = 'http://192.168.0.122:5000/dash/realtime'
+      const baseUrl = 'http://192.168.0.110:5000/dash/realtime'
       const url = baseUrl + '?packid=' + this.packid
-      console.log('--------url---------' + url)
+      // console.log('--------url---------' + url)
       axios({
         url: url,
         method: 'post'
       }).then((res) => {
-        this.realtimeDetails = res.data
+        // this.realtimeDetails = res.data
+        const result = res.data
+        var params = []
+        for (var key in result) {
+          var param = result[key]
+          param.dev_id = key
+          params.push(param)
+        }
+        // console.log('----------params---------------' + JSON.stringify(params))
+        // console.log('----------params---------------' + JSON.stringify(params[0].Res))
+        this.realtimeDetails = params.sort(this.compare('dev_num'))
         console.log('----------realtimeDetails---------------' + JSON.stringify(this.realtimeDetails))
       })
+    },
+    compare (propertyName) {
+      return function (object1, object2) {
+        var value1 = object1[propertyName]
+        var value2 = object2[propertyName]
+        if (value2 > value1) {
+          return -1
+        } else if (value2 < value1) {
+          return 1
+        } else {
+          return 0
+        }
+      }
     },
     alarmType () {
       let angle = 0// 角度，用来做简单的动画效果的

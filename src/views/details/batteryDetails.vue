@@ -148,7 +148,7 @@
 
 <script>
 import echarts from 'echarts'
-import { getPacklist } from '@/network/packDetails'
+import { getChartData, getPacklist } from '@/network/packDetails'
 import axios from 'axios'
 import { toDate } from '@/network/time'
 
@@ -181,7 +181,13 @@ export default {
       pageSizeList: [10, 20, 50, 100], // 选择每页显示个数
       currentPage: 1, // 当前页数
       pageSize: 10, // 每页条目数
-      dataIndex: 1
+      dataIndex: 1,
+      current: [],
+      voltage: [],
+      soc: [],
+      currentIndex: [],
+      voltageIndex: [],
+      socIndex: []
       // packid: '1e3a83caa4154ac39c8e82118f8ad3a5'
     }
   },
@@ -190,6 +196,7 @@ export default {
     this.voltageChartInit()
     this.currentChartInit()
     this.socChartInit()
+    this.getChartData()
   },
   methods: {
     getBatteryList () {
@@ -208,7 +215,8 @@ export default {
       })
     },
     getPackDetails () {
-      const baseUrl = 'http://192.168.0.122:5000/dash/packstatus'
+      // const baseUrl = 'http://192.168.0.122:5000/dash/packstatus'
+      const baseUrl = 'http://192.168.0.110:5000/dash/packstatus'
       const url = baseUrl + '?packid=' + this.packid
       // console.log('--------url---------' + url)
       axios({
@@ -232,6 +240,145 @@ export default {
         this.time = toDate(this.packStatus.ts)
         console.log('--------packStatus---------' + JSON.stringify(this.packStatus))
       })
+    },
+    getChartData () {
+      // const info = new FormData()
+      // info.append('cid', 'battery100')
+      // console.log(info)
+      // getChartData(info).then(res => {
+      //   console.log('-----' + JSON.stringify(res.data))
+      // })
+      const baseUrl = 'http://192.168.0.110:5000/findbycid'
+      // const url = baseUrl + '?cid=battery100'
+      // console.log('--------url---------' + url)
+      axios({
+        url: baseUrl,
+        method: 'get',
+        params: {
+          cid: 'battery100'
+        }
+      }).then((res) => {
+        console.log(JSON.stringify(res.data))
+        const result = res.data.data
+        console.log('-----result-----------' + JSON.stringify(result))
+        console.log(result[0].tolvolt)
+        for (let i = 0; i < result.length; i++) {
+          this.voltage.push((result[i].tolvolt / 10).toFixed(1))
+          this.current.push((result[i].tolcur).toFixed(1))
+          this.soc.push(result[i].soc)
+          this.voltageIndex.push(i)
+          this.currentIndex.push(i)
+          this.socIndex.push(i)
+        }
+        console.log('纵坐标1------>电压' + this.voltage)
+        console.log('横坐标1------>电压' + this.voltageIndex)
+        console.log('纵坐标2------>电流' + this.current)
+        console.log('横坐标2------>电流' + this.currentIndex)
+        console.log('纵坐标3------>soc' + this.soc)
+        console.log('横坐标3------>soc' + this.socIndex)
+
+        this.voltageChart.setOption({
+          xAxis: {
+            data: this.voltageIndex
+          },
+          series: [
+            {
+              name: '电压(V)',
+              data: this.voltage,
+              type: 'bar'
+            }
+          ]
+        })
+
+        this.currentChart.setOption({
+          xAxis: {
+            data: this.currentIndex
+          },
+          series: [
+            {
+              name: '电压(V)',
+              data: this.current,
+              type: 'bar'
+            }
+          ]
+        })
+
+        this.socChart.setOption({
+          xAxis: {
+            data: this.socIndex
+          },
+          series: [
+            {
+              name: '电压(V)',
+              data: this.soc,
+              type: 'bar'
+            }
+          ]
+        })
+      })
+      // getChartData(info).then(res => {
+      //   console.log(JSON.stringify(res.data))
+      //   this.current = res.data.current
+      //   this.voltage = res.data.voltage
+      //   this.time = res.data.Time
+      //   console.log(this.current)
+      //   console.log(this.voltage)
+      //   console.log(this.time)
+      //   for (let i = 0; i < this.current.length; i++) {
+      //     this.currentIndex.push(i)
+      //   }
+      //   for (let j = 0; j < this.voltage.length; j++) {
+      //     this.voltageIndex.push(j)
+      //   }
+      //   console.log('横坐标1------>currentIndex' + JSON.stringify(this.currentIndex))
+      //   console.log('横坐标2------>voltageIndex' + JSON.stringify(this.voltageIndex))
+      //   console.log('横坐标3------>Time' + JSON.stringify(this.time))
+      //   console.log('纵坐标1------>电流' + this.current)
+      //   console.log('纵坐标2------>电压' + this.voltage)
+      //   this.voltageChart.setOption({
+      //     xAxis: {
+      //       data: this.time
+      //     },
+      //     series: [
+      //       {
+      //         name: '电压(V)',
+      //         type: 'line',
+      //         data: this.voltage,
+      //         // 标注
+      //         markPoint: {
+      //           symbolSize: 80, // 控制气泡大小
+      //           data: [
+      //             { type: 'max', name: '最大值' },
+      //             { type: 'min', name: '最小值' }
+      //           ]
+      //         },
+      //         // 标线
+      //         markLine: {
+      //           data: [
+      //             { type: 'average', name: '平均值' }
+      //           ]
+      //         }
+      //       },
+      //       {
+      //         name: '电流(A)',
+      //         type: 'line',
+      //         data: this.current,
+      //         markPoint: {
+      //           symbolSize: 80, // 控制气泡大小
+      //           data: [
+      //             { type: 'max', name: '最大值' },
+      //             { type: 'min', name: '最小值' }
+      //           ]
+      //         },
+      //         markLine: {
+      //           data: [
+      //             { type: 'average', name: '平均值' }
+      //           ]
+      //         }
+      //       }
+      //     ]
+      //   })
+      // })
     },
     handleSizeChange (val) {
       console.log(`每页 ${val} 条`)
@@ -271,7 +418,8 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30'],
+          data: this.voltageIndex,
+          // data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30'],
           axisLine: {
             lineStyle: {
               color: 'white',
@@ -323,7 +471,7 @@ export default {
         series: [
           {
             name: '电压(V)',
-            data: [3.2, 1.4, 1.5, 2.5, 3.7, 1.7, 1.8, 2.4, 1.9, 4.8, 6.7, 3.5, 6.9, 7.8, 5.4, 2.4, 1.3, 1.7, 2.8, 3.9, 1.7, 1.8, 2.4, 1.9, 4.8, 6.7, 3.5, 6.9, 7.8, 6.3],
+            data: this.voltage,
             type: 'bar',
             itemStyle: {
               normal: {
@@ -375,7 +523,8 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30'],
+          data: this.currentIndex,
+          // data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30'],
           axisLine: {
             lineStyle: {
               color: 'white',
@@ -427,7 +576,8 @@ export default {
         series: [
           {
             name: '电流(A)',
-            data: [3.2, 1.4, 1.5, 2.5, 3.7, 1.7, 1.8, 2.4, 1.9, 4.8, 6.7, 3.5, 6.9, 7.8, 5.4, 2.4, 1.3, 1.7, 2.8, 3.9, 1.7, 1.8, 2.4, 1.9, 4.8, 6.7, 3.5, 6.9, 7.8, 6.3],
+            data: this.current,
+            // data: [3.2, 1.4, 1.5, 2.5, 3.7, 1.7, 1.8, 2.4, 1.9, 4.8, 6.7, 3.5, 6.9, 7.8, 5.4, 2.4, 1.3, 1.7, 2.8, 3.9, 1.7, 1.8, 2.4, 1.9, 4.8, 6.7, 3.5, 6.9, 7.8, 6.3],
             type: 'bar',
             itemStyle: {
               normal: {
@@ -479,7 +629,8 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30'],
+          data: this.socIndex,
+          // data: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30'],
           axisLine: {
             lineStyle: {
               color: 'white',
@@ -531,7 +682,8 @@ export default {
         series: [
           {
             name: 'SOC',
-            data: [3.2, 1.4, 1.5, 2.5, 3.7, 1.7, 1.8, 2.4, 1.9, 4.8, 6.7, 3.5, 6.9, 7.8, 5.4, 2.4, 1.3, 1.7, 2.8, 3.9, 1.7, 1.8, 2.4, 1.9, 4.8, 6.7, 3.5, 6.9, 7.8, 6.3],
+            data: this.soc,
+            // data: [3.2, 1.4, 1.5, 2.5, 3.7, 1.7, 1.8, 2.4, 1.9, 4.8, 6.7, 3.5, 6.9, 7.8, 5.4, 2.4, 1.3, 1.7, 2.8, 3.9, 1.7, 1.8, 2.4, 1.9, 4.8, 6.7, 3.5, 6.9, 7.8, 6.3],
             type: 'bar',
             itemStyle: {
               normal: {
