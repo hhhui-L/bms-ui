@@ -148,7 +148,7 @@
 
 <script>
 import echarts from 'echarts'
-import { getChartData, getPacklist } from '@/network/packDetails'
+import { getPacklist } from '@/network/packDetails'
 import axios from 'axios'
 import { toDate } from '@/network/time'
 
@@ -255,7 +255,7 @@ export default {
         url: baseUrl,
         method: 'get',
         params: {
-          cid: 'battery100'
+          cid: 'sensor000'
         }
       }).then((res) => {
         console.log(JSON.stringify(res.data))
@@ -264,7 +264,7 @@ export default {
         console.log(result[0].tolvolt)
         for (let i = 0; i < result.length; i++) {
           this.voltage.push((result[i].tolvolt / 10).toFixed(1))
-          this.current.push((result[i].tolcur).toFixed(1))
+          this.current.push(Math.abs((result[i].tolcur).toFixed(1)))
           this.soc.push(result[i].soc)
           this.voltageIndex.push(i)
           this.currentIndex.push(i)
@@ -316,69 +316,6 @@ export default {
           ]
         })
       })
-      // getChartData(info).then(res => {
-      //   console.log(JSON.stringify(res.data))
-      //   this.current = res.data.current
-      //   this.voltage = res.data.voltage
-      //   this.time = res.data.Time
-      //   console.log(this.current)
-      //   console.log(this.voltage)
-      //   console.log(this.time)
-      //   for (let i = 0; i < this.current.length; i++) {
-      //     this.currentIndex.push(i)
-      //   }
-      //   for (let j = 0; j < this.voltage.length; j++) {
-      //     this.voltageIndex.push(j)
-      //   }
-      //   console.log('横坐标1------>currentIndex' + JSON.stringify(this.currentIndex))
-      //   console.log('横坐标2------>voltageIndex' + JSON.stringify(this.voltageIndex))
-      //   console.log('横坐标3------>Time' + JSON.stringify(this.time))
-      //   console.log('纵坐标1------>电流' + this.current)
-      //   console.log('纵坐标2------>电压' + this.voltage)
-      //   this.voltageChart.setOption({
-      //     xAxis: {
-      //       data: this.time
-      //     },
-      //     series: [
-      //       {
-      //         name: '电压(V)',
-      //         type: 'line',
-      //         data: this.voltage,
-      //         // 标注
-      //         markPoint: {
-      //           symbolSize: 80, // 控制气泡大小
-      //           data: [
-      //             { type: 'max', name: '最大值' },
-      //             { type: 'min', name: '最小值' }
-      //           ]
-      //         },
-      //         // 标线
-      //         markLine: {
-      //           data: [
-      //             { type: 'average', name: '平均值' }
-      //           ]
-      //         }
-      //       },
-      //       {
-      //         name: '电流(A)',
-      //         type: 'line',
-      //         data: this.current,
-      //         markPoint: {
-      //           symbolSize: 80, // 控制气泡大小
-      //           data: [
-      //             { type: 'max', name: '最大值' },
-      //             { type: 'min', name: '最小值' }
-      //           ]
-      //         },
-      //         markLine: {
-      //           data: [
-      //             { type: 'average', name: '平均值' }
-      //           ]
-      //         }
-      //       }
-      //     ]
-      //   })
-      // })
     },
     handleSizeChange (val) {
       console.log(`每页 ${val} 条`)

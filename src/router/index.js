@@ -200,10 +200,19 @@ const routes = [
           requireAuth: true
         }
       },
+      // {
+      //   path: '/bms',
+      //   name: '电池监控',
+      //   component: () => import('../views/bms/Bms'),
+      //   meta: {
+      //     title: '电池监控',
+      //     requireAuth: true
+      //   }
+      // },
       {
-        path: '/bms',
+        path: '/sensor/chart',
         name: '电池监控',
-        component: () => import('../views/bms/Bms'),
+        component: () => import('../views/details/sensorChart'),
         meta: {
           title: '电池监控',
           requireAuth: true

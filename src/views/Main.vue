@@ -128,10 +128,10 @@
               <i class="el-icon-setting"></i>
               <span slot="title">电池单体详情</span>
             </el-menu-item>
-<!--            <el-menu-item index="/test">-->
-<!--              <i class="el-icon-setting"></i>-->
-<!--              <span slot="title">test</span>-->
-<!--            </el-menu-item>-->
+            <el-menu-item index="/test">
+              <i class="el-icon-setting"></i>
+              <span slot="title">test</span>
+            </el-menu-item>
           </el-menu>
         </el-aside>
       <el-container>

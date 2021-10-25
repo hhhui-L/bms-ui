@@ -125,20 +125,18 @@
 <!--            </div>-->
 <!--          </div>-->
         <div v-for="item in realtimeDetails" :key="item.dev_num" style="height: 135px;width: 21%;margin:20px;float: left">
-          <!--        <p>{{item.id}}</p>-->
-          <!--        <img src="../assets/battery/error.png">-->
           <div style="padding: 0px 10px 10px 20px;float: left;">
             <div>
               <template>
-                  <img v-if="item.Soh < 0.16" src="../../assets/battery/100%.png">
-                  <img v-else-if="0.16 <= item.Soh && item.Soh < 0.2" src="../../assets/battery/80%.png">
-                  <img v-else-if="0.2 <= item.Soh && item.Soh < 0.4" src="../../assets/battery/60%.png">
-                  <img v-else-if="0.4 <= item.Soh && item.Soh < 0.6" src="../../assets/battery/40%.png">
-                  <img v-else-if="0.6 <= item.Soh && item.Soh < 0.8" src="../../assets/battery/20%.png">
-                  <img v-else src="../../assets/battery/error.png">
+                  <img :id="'sensor'+ (item.dev_num)" v-if="item.Soh < 0.16" @click="toSensorChart($event)" src="../../assets/battery/100%.png">
+                  <img :id="'sensor'+ (item.dev_num)" v-else-if="0.16 <= item.Soh && item.Soh < 0.2" @click="toSensorChart($event)" src="../../assets/battery/80%.png">
+                  <img :id="'sensor'+ (item.dev_num)" v-else-if="0.2 <= item.Soh && item.Soh < 0.4" @click="toSensorChart($event)" src="../../assets/battery/60%.png">
+                  <img :id="'sensor'+ (item.dev_num)" v-else-if="0.4 <= item.Soh && item.Soh < 0.6" @click="toSensorChart($event)" src="../../assets/battery/40%.png">
+                  <img :id="'sensor'+ (item.dev_num)" v-else-if="0.6 <= item.Soh && item.Soh < 0.8" @click="toSensorChart($event)" src="../../assets/battery/20%.png">
+                  <img :id="'sensor'+ (item.dev_num)" v-else @click="toSensorChart($event)" src="../../assets/battery/error.png">
               </template>
             </div>
-            <div style="font-size: 20px">{{item.dev_num}}</div>
+            <span style="font-size: 20px">{{item.dev_num}}</span>
           </div>
 
           <div style="padding: 6px 10px 10px 0px;float: left;font-size: 20px">
@@ -226,7 +224,9 @@ export default {
       time: '0',
       voltage: '0',
       current: '0',
-      SOC: '0'
+      SOC: '0',
+      dev_num: '',
+      count: 0
     }
   },
   mounted () {
@@ -254,7 +254,8 @@ export default {
       })
     },
     getPackStatus () {
-      const baseUrl = 'http://192.168.0.122:5000/dash/packstatus'
+      // const baseUrl = 'http://192.168.0.122:5000/dash/packstatus'
+      const baseUrl = 'http://192.168.0.110:5000/dash/packstatus'
       const url = baseUrl + '?packid=' + this.packid
       // console.log('--------url---------' + url)
       axios({
@@ -297,6 +298,7 @@ export default {
         for (var key in result) {
           var param = result[key]
           param.dev_id = key
+          // param.devNum = 'sensor' + result[key].dev_num
           params.push(param)
         }
         // console.log('----------params---------------' + JSON.stringify(params))
@@ -317,6 +319,15 @@ export default {
           return 0
         }
       }
+    },
+    toSensorChart (index) {
+      this.$router.push({
+        path: '/sensor/chart',
+        query: {
+          devNum: index.currentTarget.id
+        }
+      })
+      console.log('--------this.devNum1111-----------' + document.getElementById('devNum').innerHTML)
     },
     alarmType () {
       let angle = 0// 角度，用来做简单的动画效果的

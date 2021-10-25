@@ -142,8 +142,8 @@ export default {
     return {
       recordListTable: [],
       queryInfo: {
-        cid: 'battery101',
-        time: '20211020'
+        cid: 'sensor001',
+        time: '20211021'
       },
       totalCount: 400, // 总条目数
       pageSizeList: [10, 20, 50, 100], // 选择每页显示个数
@@ -173,76 +173,76 @@ export default {
         label: '浮充'
       }],
       batteryId: [{
-        value: 'battery101',
+        value: 'sensor001',
         label: '电池001'
       }, {
-        value: 'battery102',
+        value: 'sensor002',
         label: '电池002'
       }, {
-        value: 'battery103',
+        value: 'sensor003',
         label: '电池003'
       }, {
-        value: 'battery104',
+        value: 'sensor004',
         label: '电池004'
       }, {
-        value: 'battery105',
+        value: 'sensor005',
         label: '电池005'
       }, {
-        value: 'battery106',
+        value: 'sensor006',
         label: '电池006'
       }, {
-        value: 'battery107',
+        value: 'sensor007',
         label: '电池007'
       }, {
-        value: 'battery108',
+        value: 'sensor008',
         label: '电池008'
       }, {
-        value: 'battery109',
+        value: 'sensor009',
         label: '电池009'
       }, {
-        value: 'battery110',
+        value: 'sensor010',
         label: '电池010'
       }, {
-        value: 'battery111',
+        value: 'sensor011',
         label: '电池011'
       }, {
-        value: 'battery112',
+        value: 'sensor012',
         label: '电池012'
       }, {
-        value: 'battery113',
+        value: 'sensor013',
         label: '电池013'
       }, {
-        value: 'battery114',
+        value: 'sensor014',
         label: '电池014'
       }, {
-        value: 'battery115',
+        value: 'sensor015',
         label: '电池015'
       }, {
-        value: 'battery116',
+        value: 'sensor016',
         label: '电池016'
       }, {
-        value: 'battery117',
+        value: 'sensor017',
         label: '电池017'
       }, {
-        value: 'battery118',
+        value: 'sensor018',
         label: '电池018'
       }, {
-        value: 'battery119',
+        value: 'sensor019',
         label: '电池019'
       }, {
-        value: 'battery120',
+        value: 'sensor020',
         label: '电池020'
       }, {
-        value: 'battery121',
+        value: 'sensor021',
         label: '电池021'
       }, {
-        value: 'battery122',
+        value: 'sensor022',
         label: '电池022'
       }, {
-        value: 'battery123',
+        value: 'sensor023',
         label: '电池023'
       }, {
-        value: 'battery124',
+        value: 'sensor024',
         label: '电池024'
       }],
       timeRange: null
@@ -253,8 +253,6 @@ export default {
   },
   methods: {
     getRecord () {
-      console.log(this.queryInfo.cid)
-      console.log(this.queryInfo.time)
       const baseUrl = 'http://192.168.0.110:5000/findbycidandtime'
       axios({
         url: baseUrl,
@@ -264,6 +262,8 @@ export default {
           time: this.queryInfo.time
         }
       }).then((res) => {
+        console.log('------cid-----' + this.queryInfo.cid)
+        console.log('------time-----' + this.queryInfo.time)
         console.log(JSON.stringify(res.data.data))
         this.recordListTable = res.data.data
       })
