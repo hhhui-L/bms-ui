@@ -66,6 +66,15 @@ const routes = [
         }
       },
       {
+        path: '/role/manage',
+        name: '角色管理',
+        component: () => import('../views/systemManage/roleManage'),
+        meta: {
+          title: '角色管理',
+          requireAuth: true
+        }
+      },
+      {
         path: '/alarm/manage',
         name: '报警管理',
         component: () => import('../views/systemManage/alarmManage'),

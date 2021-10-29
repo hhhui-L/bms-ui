@@ -222,40 +222,61 @@ export default {
         value: '1',
         label: '湖南大学实验室'
       }],
-      alarmType: [{
-        value: '0',
-        label: '环境温度超温报警'
-      }, {
-        value: '1',
-        label: '整组低压'
-      }, {
-        value: '2',
-        label: '预维护报警'
-      }, {
-        value: '3',
-        label: '传感器故障'
-      }, {
-        value: '4',
-        label: '内阻报警'
-      }, {
-        value: '5',
-        label: '整组过压'
-      }, {
-        value: '6',
-        label: 'SOC过低'
-      }, {
-        value: '7',
-        label: '应急放电过流'
-      }, {
-        value: '8',
-        label: '单体电压过高'
-      }, {
-        value: '9',
-        label: '充电过流'
-      }, {
-        value: '10',
-        label: '电容量过低'
-      }],
+      alarmType: [
+        {
+          value: '0',
+          label: '温度过高'
+        }, {
+          value: '1',
+          label: '温度过低'
+        }, {
+          value: '2',
+          label: '电压过高'
+        }, {
+          value: '3',
+          label: '电压过低'
+        }, {
+          value: '4',
+          label: '电池电量低'
+        }, {
+          value: '5',
+          label: '电池内阻过高'
+        }
+        // {
+      //   value: '0',
+      //   label: '环境温度超温报警'
+      // }, {
+      //   value: '1',
+      //   label: '整组低压'
+      // }, {
+      //   value: '2',
+      //   label: '预维护报警'
+      // }, {
+      //   value: '3',
+      //   label: '传感器故障'
+      // }, {
+      //   value: '4',
+      //   label: '内阻报警'
+      // }, {
+      //   value: '5',
+      //   label: '整组过压'
+      // }, {
+      //   value: '6',
+      //   label: 'SOC过低'
+      // }, {
+      //   value: '7',
+      //   label: '应急放电过流'
+      // }, {
+      //   value: '8',
+      //   label: '单体电压过高'
+      // }, {
+      //   value: '9',
+      //   label: '充电过流'
+      // }, {
+      //   value: '10',
+      //   label: '电容量过低'
+      // }
+      ],
       alarmLevel: [{
         value: '1',
         label: '一级'

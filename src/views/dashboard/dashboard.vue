@@ -21,8 +21,8 @@
           </el-row>
           <el-row class="elRowBase2" :gutter="10">
             <el-col :span="8" style="color: #01FFFF">328</el-col>
-            <el-col :span="8" style="color: #01FFFF">330</el-col>
-            <el-col :span="8" style="color: #FF0000">10</el-col>
+            <el-col :span="8" style="color: #01FFFF">{{ this.onlineCount }}</el-col>
+            <el-col :span="8" style="color: #FF0000">{{ this.errorCount }}</el-col>
           </el-row>
           <el-row class="elRowBase1" :gutter="10">
             <el-col :span="8">天</el-col>
@@ -76,15 +76,25 @@
         </div>
         <div style="height:80%;width:100%;">
           <template>
-            <vue-seamless-scroll :data="listData" class="seamless-warp"  :class-option="classOption">
+            <vue-seamless-scroll :data="alarmLogsData" class="seamless-warp"  :class-option="classOption">
+<!--              <ul class="item">-->
+<!--                <li v-for="item in alarmLogsData" class="Carousel_li" :class="[{'border_1':item.index=='1'},{'border_2':item.index=='2'},{'border_3':item.index=='3'}]" >-->
+<!--                  <span class="pro_1" v-if="item.index=='1'">一级</span>-->
+<!--                  <span class="pro_2" v-if="item.index=='2'">二级</span>-->
+<!--                  <span class="pro_3" v-if="item.index=='3'">三级</span>-->
+<!--                  <span class="date" v-text="item.date"></span>-->
+<!--                  &lt;!&ndash;            <span style="padding:0 10px;">:</span>&ndash;&gt;-->
+<!--                  <span class="title" v-text="item.title" :class="[{'pro_1':item.index=='1'},{'pro_2':item.index=='2'},{'pro_3':item.index=='3'}]" ></span>-->
+<!--                </li>-->
+<!--              </ul>-->
               <ul class="item">
-                <li v-for="item in listData" class="Carousel_li" :class="[{'border_1':item.index=='1'},{'border_2':item.index=='2'},{'border_3':item.index=='3'}]" >
-                  <span class="pro_1" v-if="item.index=='1'">一级</span>
-                  <span class="pro_2" v-if="item.index=='2'">二级</span>
-                  <span class="pro_3" v-if="item.index=='3'">三级</span>
-                  <span class="date" v-text="item.date"></span>
-                  <!--            <span style="padding:0 10px;">:</span>-->
-                  <span class="title" v-text="item.title" :class="[{'pro_1':item.index=='1'},{'pro_2':item.index=='2'},{'pro_3':item.index=='3'}]" ></span>
+                <li v-for="item in alarmLogsData" class="Carousel_li" :class="[{'border_1':item.alarm_level=='一级'},{'border_2':item.alarm_level=='二级'},{'border_3':item.alarm_level=='三级'}]" >
+                  <span class="pro_1" v-if="item.alarm_level=='一级'">一级</span>
+                  <span class="pro_2" v-if="item.alarm_level=='二级'">二级</span>
+                  <span class="pro_3" v-if="item.alarm_level=='三级'">三级</span>
+
+                  <span class="date" v-text="item.alert_time"></span>
+                  <span class="title" v-text="item.dev_num + item.alert_desc" :class="[{'pro_1':item.alarm_level=='一级'},{'pro_2':item.alarm_level=='二级'},{'pro_3':item.alarm_level=='三级'}]" ></span>
                 </li>
               </ul>
             </vue-seamless-scroll>
@@ -104,10 +114,10 @@
         <div slot="header" style="font-size: 25px;color: white">
           <!--            <span class="card-title" style="font-size: 25px;color: white">监控地图</span>-->
           <el-row class="elRowBase" :gutter="10">
-            <el-col :span="6" style="text-align: left">站点数量:<span>16</span></el-col>
-            <el-col :span="6" style="text-align: left">故障数量:<span>16</span></el-col>
-            <el-col :span="6" style="text-align: left">电池组数量:<span>16</span></el-col>
-            <el-col :span="6" style="text-align: left">在线数量:<span>16</span></el-col>
+            <el-col :span="6" style="text-align: left">站点数量:<span>{{ this.siteCount }}</span></el-col>
+            <el-col :span="6" style="text-align: left">故障数量:<span>{{ this.errorCount }}</span></el-col>
+            <el-col :span="6" style="text-align: left">电池组数量:<span>{{ this.totalBatteryCount }}</span></el-col>
+            <el-col :span="6" style="text-align: left">在线数量:<span>{{ this.onlineCount }}</span></el-col>
           </el-row>
         </div>
 <!--        <div id="box" v-if="ifbox" style="color: white">-->
@@ -150,6 +160,11 @@
 </template>
 
 <script>
+import { getPacklist } from '@/network/packDetails'
+import axios from 'axios'
+import { findAlarmLog, findAllBatterys } from '@/network/dashboard'
+import { toDate } from '@/network/time'
+
 const echarts = require('echarts')
 require('echarts/map/js/china')
 export default {
@@ -159,41 +174,62 @@ export default {
     return {
       ifbox: false,
       TipsList: [],
-      listData: [{
-        index: '2',
-        title: '电池温度过高',
-        date: '2020-12-16'
-      }, {
-        index: '1',
-        title: '电池电量不足',
-        date: '2021-07-16'
-      }, {
-        index: '3',
-        title: '电池温度过低',
-        date: '2021-08-12'
-      }, {
-        index: '1',
-        title: '电池电量不足',
-        date: '2021-08-26'
-      }, {
-        index: '3',
-        title: '电池电压过高',
-        date: '2021-09-16'
-      }, {
-        index: '1',
-        title: '出现故障',
-        date: '2017-12-16'
-      }]
+      listInfo: {
+        corpname: '湖南大学实验室',
+        devnum: '',
+        devtype: '',
+        pagenum: '0',
+        pagesize: '10'
+      },
+      errorCount: '0',
+      siteCount: '',
+      // errorCount: '4',
+      totalBatteryCount: '',
+      province: '',
+      onlineCount: '',
+      packid: '',
+      data: [],
+      alarmLogsData: [
+      //   {
+      //   alarm_level: '一级',
+      //   alert_desc: '电池温度过高',
+      //   alert_time: '2020-12-16'
+      // }, {
+      //   alarm_level: '一级',
+      //   alert_desc: '电池电量不足',
+      //   alert_time: '2021-07-16'
+      // }, {
+      //   alarm_level: '三级',
+      //   alert_desc: '电池温度过低',
+      //   alert_time: '2021-08-12'
+      // }, {
+      //   alarm_level: '一级',
+      //   alert_desc: '电池电量不足',
+      //   alert_time: '2021-08-26'
+      // }, {
+      //   alarm_level: '三级',
+      //   alert_desc: '电池电压过高',
+      //   alert_time: '2021-09-16'
+      // }, {
+      //   alarm_level: '一级',
+      //   alert_desc: '出现故障',
+      //   alert_time: '2017-12-16'
+      // }
+      ]
     }
   },
   mounted () {
-    this.ChinaMap()
+    this.getAllBatterys()
+    this.getBatteryList()
+    this.getAlarmLogs()
+    // this.ChinaMap()
   },
   computed: {
     classOption () {
       return {
         step: 0.5, // 数值越大速度滚动越快
         // limitMoveNum: 10, // 开始无缝滚动的数据量 this.dataList.length
+        limitMoveNum: this.alarmLogsData.length,
         hoverStop: true, // 是否开启鼠标悬停stop
         direction: 1, // 0向下 1向上 2向左 3向右
         // openWatch: true, // 开启数据实时监控刷新dom
@@ -204,39 +240,149 @@ export default {
     }
   },
   methods: {
-    // 点击模拟数据右箭头跳转外页面，
-    // toClient (id) {
-    //   this.$router.push({
-    //     path: '/Client',
-    //     query: { lesseeCompanyId: id }
-    //   })
-    // },
     toPacklist () {
       this.$router.push({
         path: '/battery/details'
       })
     },
+    getAllBatterys () {
+      findAllBatterys().then(res => {
+        console.log('--- getAllBatterys电池组列表---' + JSON.stringify(res.data))
+        this.totalBatteryCount = res.data.data.length
+        this.province = res.data.data[0].ctrl_address
+      }).catch(res => {
+        console.log(res.data)
+      })
+    },
+    getAlarmLogs () {
+      findAlarmLog().then(res => {
+        console.log('--- findAlarmLog ---' + JSON.stringify(res.data.data))
+        const result = res.data.data
+        for (var i = 0; i < result.length; i++) {
+          result[i].alert_time = toDate(result[i].alert_time)
+        }
+        this.alarmLogsData = result
+      }).catch(res => {
+        console.log(res.data)
+      })
+    },
+    getBatteryList () {
+      getPacklist(this.listInfo).then(res => {
+        console.log('---this.listInfo--' + JSON.stringify(this.listInfo))
+        console.log('---getPacklist电池组列表---' + JSON.stringify(res.data))
+        this.siteCount = res.data.content.length
+        // this.totalBatteryCount = res.data.totalElements
+        this.packid = res.data.content[0].dev_id
+        console.log('--this.packid---' + this.packid)
+        this.getRealtimeDetail()
+      }).catch(res => {
+        console.log(res.data)
+      })
+    },
+    getRealtimeDetail () {
+      const baseUrl = 'http://47.97.21.239:5000/dash/realtime'
+      // const baseUrl = 'http://192.168.0.110:5000/dash/realtime'
+      const url = baseUrl + '?packid=' + this.packid
+      // console.log('--------url---------' + url)
+      axios({
+        url: url,
+        method: 'post'
+      }).then((res) => {
+        // this.realtimeDetails = res.data
+        console.log('---------------getRealtimeDetail------------' + JSON.stringify(res.data))
+        const result = res.data
+        // const count = 0
+        this.onlineCount = Object.keys(result).length
+        for (var item in result) {
+          // console.log(JSON.stringify(result[item].Soh))
+          if (result[item].Soh >= 0.8 && result[item].Soh < 1) {
+            this.errorCount++
+          }
+        }
+        var param = {}
+        // param.name = '湖南'
+        param.name = this.province
+        param.siteNum = this.siteCount
+        param.batteryNum = this.totalBatteryCount
+        param.onlineNum = this.onlineCount
+        param.faultNum = this.errorCount
+        this.data.push(param)
+        console.log('---------------this.data------------' + JSON.stringify(this.data))
+        if (this.data[0].faultNum > 0) {
+          this.ChinaMap1()
+        } else {
+          this.ChinaMap()
+        }
+        // this.ChinaMap()
+        // var params = []
+        // for (var key in result) {
+        //   var param = result[key]
+        //   param.dev_id = key
+        //   // param.devNum = 'sensor' + result[key].dev_num
+        //   params.push(param)
+        // }
+        // // console.log('----------params---------------' + JSON.stringify(params))
+        // // console.log('----------params---------------' + JSON.stringify(params[0].Res))
+        // this.realtimeDetails = params.sort(this.compare('dev_num'))
+        // console.log('----------realtimeDetails---------------' + JSON.stringify(this.realtimeDetails))
+      })
+    },
+    // getPackDetails () {
+    //   // const baseUrl = 'http://192.168.0.122:5000/dash/packstatus'
+    //   const baseUrl = 'http://192.168.0.110:5000/dash/packstatus'
+    //   const url = baseUrl + '?packid=' + this.packid
+    //   // console.log('--------url---------' + url)
+    //   axios({
+    //     url: url,
+    //     method: 'post'
+    //   }).then((res) => {
+    //     console.log('---------------getPackDetails------------' + JSON.stringify(res.data))
+    //     const result = res.data
+    //     this.onlineCount = result.length
+    //     // const index = this.status.length - 1
+    //     // this.packStatus = this.status[index]
+    //     // if (this.packStatus.values.Status === 1) {
+    //     //   this.batStatus = '浮充'
+    //     // } else if (this.packStatus.values.Status === 2) {
+    //     //   this.batStatus = '均充'
+    //     // } else if (this.packStatus.values.Status === 3) {
+    //     //   this.batStatus = '放电'
+    //     // }
+    //     // this.TolVer = this.packStatus.values.TolVer
+    //     // this.CellVer = this.packStatus.values.CellVer
+    //     // this.debugDetail = this.packStatus.values.DebugDetail
+    //     // this.time = toDate(this.packStatus.ts)
+    //     // console.log('--------packStatus---------' + JSON.stringify(this.packStatus))
+    //   })
+    // },
     ChinaMap () {
       var that = this
       // 模拟数据
-      const data = [
-        // { name: '海门', siteNum: 90, batteryNum: 35, onlineNum: 8, faultNum: 2 },
-        // { name: '鄂尔多斯', siteNum: 102, batteryNum: 15, onlineNum: 16, faultNum: 1 },
-        // { name: '齐齐哈尔', siteNum: 140, batteryNum: 30, onlineNum: 20, faultNum: 2 },
-        // { name: '海门', value: 90, num: 5, id: 8 },
-        // { name: '鄂尔多斯', value: 102, num: 15, id: 16 },
-        // { name: '齐齐哈尔', value: 140, num: 30, id: 20 }
-
-        { name: '海门', siteNum: 90, batteryNum: 5, onlineNum: 8, faultNum: 2 },
-        { name: '鄂尔多斯', siteNum: 102, batteryNum: 150, onlineNum: 16, faultNum: 1 },
-        { name: '齐齐哈尔', siteNum: 140, batteryNum: 30, onlineNum: 20, faultNum: 2 },
-        { name: '湖南', siteNum: 170, batteryNum: 50, onlineNum: 200, faultNum: 2 }
-
-        // { name: '海门', siteNum: 90, batteryNum: 35, onlineNum: 8 },
-        // { name: '鄂尔多斯', siteNum: 102, batteryNum: 15, onlineNum: 16 },
-        // { name: '齐齐哈尔', siteNum: 140, batteryNum: 30, onlineNum: 20 }
-
-      ]
+      // const data = [
+      //   // { name: '海门', siteNum: 90, batteryNum: 35, onlineNum: 8, faultNum: 2 },
+      //   // { name: '鄂尔多斯', siteNum: 102, batteryNum: 15, onlineNum: 16, faultNum: 1 },
+      //   // { name: '齐齐哈尔', siteNum: 140, batteryNum: 30, onlineNum: 20, faultNum: 2 },
+      //   // { name: '海门', value: 90, num: 5, id: 8 },
+      //   // { name: '鄂尔多斯', value: 102, num: 15, id: 16 },
+      //   // { name: '齐齐哈尔', value: 140, num: 30, id: 20 }
+      //
+      //   // { name: '湖南', siteNum: this.siteCount, batteryNum: 50, onlineNum: 200, faultNum: 2 }
+      //
+      //   // { name: '海门', siteNum: 90, batteryNum: 35, onlineNum: 8 },
+      //   // { name: '鄂尔多斯', siteNum: 102, batteryNum: 15, onlineNum: 16 },
+      //   // { name: '齐齐哈尔', siteNum: 140, batteryNum: 30, onlineNum: 20 }
+      //
+      // ]
+      const data = this.data
+      // if (data[0].faultNum > 0) {
+      //  this.scatter = {
+      //     // color: '#31FBFB',
+      //     color: 'red',
+      //     symbolSize: 30, // 点的大小
+      //     symbol: 'pin', // 点的样式
+      //     cursor: 'pointer' // 鼠标放上去的效果
+      //   }
+      // }
       const geoCoordMap = {
         海门: [121.15, 31.89],
         鄂尔多斯: [109.781327, 39.608266],
@@ -345,7 +491,7 @@ export default {
         tooltip: { // 鼠标移到图里面的浮动提示框
           trigger: 'item',
           // params.data 就是series配置项中的data数据遍历
-          extraCssText: 'width:400px;height:400px',
+          extraCssText: 'width:300px;height:200px',
           formatter: function (params) {
             const tipHtml = `
            <div>
@@ -354,42 +500,44 @@ export default {
             <p style='text-align:left;margin-top:8px;font-size: 20px'>电池组数量：${params.data.batteryNum[2]}</p>
             <p style='text-align:left;margin-top:8px;font-size: 20px'>在线数量：${params.data.onlineNum[2]}</p>
             <p style='text-align:left;margin-top:8px;font-size: 20px'>故障数量：${params.data.faultNum[2]}</p>
-            <p style='text-align:left;margin-top:8px;margin-bottom:4px;font-size: 20px'>故障详情：</p>
-            <div>
-              <table style="text-align: center;">
-                <tr style="font-size: 20px;color: #01FFFF;height: 25px">
-                    <th style="width: 160px">机房地址</th>
-                    <th style="width: 160px">机房名称</th>
-                    <th style="width: 160px">故障描述</th>
-                </tr>
-                <tr style="font-size: 18px;height: 25px">
-                    <td style="width: 160px">湖南大学</td>
-                    <td style="width: 160px">实验室517</td>
-                    <td style="width: 160px">存在电池异常</td>
-                </tr>
-                <tr style="font-size: 18px;height: 25px">
-                    <td style="width: 160px">湖南大学</td>
-                    <td style="width: 160px">实验室518</td>
-                    <td style="width: 160px">存在电池异常</td>
-                </tr>
-                <tr style="font-size: 18px;height: 25px">
-                    <td style="width: 160px">湖南大学</td>
-                    <td style="width: 160px">实验室519</td>
-                    <td style="width: 160px">存在电池异常</td>
-                </tr>
-                <tr style="font-size: 18px;height: 25px">
-                    <td style="width: 160px">湖南大学</td>
-                    <td style="width: 160px">实验室520</td>
-                    <td style="width: 160px">存在电池异常</td>
-                </tr>
-                <tr style="font-size: 18px;height: 25px">
-                    <td style="width: 160px">湖南大学</td>
-                    <td style="width: 160px">实验室521</td>
-                    <td style="width: 160px">存在电池异常</td>
-                </tr>
-            </table>
-            </div>
             `
+
+            //   <p style='text-align:left;margin-top:8px;margin-bottom:4px;font-size: 20px'>故障详情：</p>
+            // <div>
+            //   <table style="text-align: center;">
+            //     <tr style="font-size: 20px;color: #01FFFF;height: 25px">
+            //       <th style="width: 160px">机房地址</th>
+            //       <th style="width: 160px">机房名称</th>
+            //       <th style="width: 160px">故障描述</th>
+            //     </tr>
+            //     <tr style="font-size: 18px;height: 25px">
+            //       <td style="width: 160px">湖南大学</td>
+            //       <td style="width: 160px">实验室517</td>
+            //       <td style="width: 160px">存在电池异常</td>
+            //     </tr>
+            //     <tr style="font-size: 18px;height: 25px">
+            //       <td style="width: 160px">湖南大学</td>
+            //       <td style="width: 160px">实验室518</td>
+            //       <td style="width: 160px">存在电池异常</td>
+            //     </tr>
+            //     <tr style="font-size: 18px;height: 25px">
+            //       <td style="width: 160px">湖南大学</td>
+            //       <td style="width: 160px">实验室519</td>
+            //       <td style="width: 160px">存在电池异常</td>
+            //     </tr>
+            //     <tr style="font-size: 18px;height: 25px">
+            //       <td style="width: 160px">湖南大学</td>
+            //       <td style="width: 160px">实验室520</td>
+            //       <td style="width: 160px">存在电池异常</td>
+            //     </tr>
+            //     <tr style="font-size: 18px;height: 25px">
+            //       <td style="width: 160px">湖南大学</td>
+            //       <td style="width: 160px">实验室521</td>
+            //       <td style="width: 160px">存在电池异常</td>
+            //     </tr>
+            //   </table>
+            // </div>
+
             return tipHtml
             // return params.name + ' 已接入: ' + ' 站点数量: ' + params.data.siteNum[2] + ' 电池组数量: ' + params.data.batteryNum[2] + ' 在线数量: ' + params.data.onlineNum[2] + ' 故障数量: ' + params.data.faultNum[2]
           }
@@ -399,6 +547,252 @@ export default {
           type: 'scatter',
           coordinateSystem: 'geo',
           // color: '#e1ebe3', // 点的颜色
+          color: '#31FBFB',
+          // color: {if (this.data[0].faultNum > 0 ) ? 'red': '#31FBFB'},
+          // color: 'red',
+          data: convertData(data),
+          symbolSize: 30, // 点的大小
+          symbol: 'pin', // 点的样式
+          cursor: 'pointer', // 鼠标放上去的效果
+          label: {
+            normal: { // 默认展示
+              show: false
+            },
+            emphasis: { // 滑过展示
+              show: false
+            }
+          },
+          itemStyle: {
+            emphasis: {
+              borderColor: '#5c8f6e',
+              borderWidth: 5
+            }
+          }
+        },
+
+        {
+          type: 'map',
+          map: 'china',
+          geoIndex: 0,
+          aspectScale: 0.75,
+          tooltip: {
+            show: false
+          }
+        }
+
+        ]
+      })
+      // if (myChartChina && typeof myChartChina === "object") {
+      //     myChartChina.setOption(myChartChina, true);
+      // }
+      myChartChina.on('click', function (params) { // 点击事件
+        if (params.componentType === 'series') {
+          if (params.data) {
+            that.TipsList = params.data
+            console.log('---------进入-------' + JSON.stringify(params.data))
+            that.ifbox = true
+            // that.boxPosition()
+          } else {
+            that.ifbox = false
+          }
+        }
+      })
+    },
+    ChinaMap1 () {
+      var that = this
+      // 模拟数据
+      // const data = [
+      //   // { name: '海门', siteNum: 90, batteryNum: 35, onlineNum: 8, faultNum: 2 },
+      //   // { name: '鄂尔多斯', siteNum: 102, batteryNum: 15, onlineNum: 16, faultNum: 1 },
+      //   // { name: '齐齐哈尔', siteNum: 140, batteryNum: 30, onlineNum: 20, faultNum: 2 },
+      //   // { name: '海门', value: 90, num: 5, id: 8 },
+      //   // { name: '鄂尔多斯', value: 102, num: 15, id: 16 },
+      //   // { name: '齐齐哈尔', value: 140, num: 30, id: 20 }
+      //
+      //   // { name: '湖南', siteNum: this.siteCount, batteryNum: 50, onlineNum: 200, faultNum: 2 }
+      //
+      //   // { name: '海门', siteNum: 90, batteryNum: 35, onlineNum: 8 },
+      //   // { name: '鄂尔多斯', siteNum: 102, batteryNum: 15, onlineNum: 16 },
+      //   // { name: '齐齐哈尔', siteNum: 140, batteryNum: 30, onlineNum: 20 }
+      //
+      // ]
+      const data = this.data
+      // if (data[0].faultNum > 0) {
+      //  this.scatter = {
+      //     // color: '#31FBFB',
+      //     color: 'red',
+      //     symbolSize: 30, // 点的大小
+      //     symbol: 'pin', // 点的样式
+      //     cursor: 'pointer' // 鼠标放上去的效果
+      //   }
+      // }
+      const geoCoordMap = {
+        海门: [121.15, 31.89],
+        鄂尔多斯: [109.781327, 39.608266],
+        齐齐哈尔: [123.97, 47.33],
+        // 黑龙江: [127.9688, 45.368,1],
+        // 内蒙古: [110.3467, 41.4899,1],
+        // 吉林: [125.8154, 44.2584,1],
+        // 北京: [116.4551, 40.2539,2],
+        // 辽宁: [123.1238, 42.1216,1],
+        // 河北: [114.4995, 38.1006,1],
+        // 天津: [117.4219, 39.4189,1],
+        // 山西: [112.3352, 37.9413,1],
+        // 陕西: [109.1162, 34.2004,1],
+        // 甘肃: [103.5901, 36.3043,1],
+        // 宁夏: [106.3586, 38.1775,1],
+        // 青海: [101.4038, 36.8207,1],
+        // 新疆: [87.9236, 43.5883,1],
+        // 西藏: [91.11, 29.97,1],
+        // 四川: [103.9526, 30.7617,1],
+        // 重庆: [108.384366, 30.439702,1],
+        // 山东: [117.1582, 36.8701,1],
+        // 河南: [113.4668, 34.6234,1],
+        // 江苏: [118.8062, 31.9208,1],
+        // 安徽: [117.29, 32.0581,1],
+        // 湖北: [114.3896, 30.6628,1],
+        // 浙江: [119.5313, 29.8773,1],
+        // 福建: [119.4543, 25.9222,1],
+        // 江西: [116.0046, 28.6633,1],
+        湖南: [113.0823, 28.2568]
+        // 贵州: [106.6992, 26.7682,1],
+        // 云南: [102.9199, 25.4663,1],
+        // 广东: [113.12244, 23.009505,1],
+        // 广西: [108.479, 23.1152,1],
+        // 海南: [110.3893, 19.8516,1],
+        // 上海: [121.4648, 31.2891,1],
+        // 台湾: [120.991676054688, 24.7801149726563,1],
+        // 澳门: [113.33, 22.11,1],
+        // 香港: [114.15, 22.15,1]
+      }
+
+      var convertData = function (data) {
+        var res = []
+        for (var i = 0; i < data.length; i++) {
+          // 遍历data数据
+          // 通过获取name去获取地理位置
+          var geoCoord = geoCoordMap[data[i].name]
+          // 存放于res：[{"name":"海门","value":[121.15,31.89,90],"num":[121.15,31.89,5],"id":[121.15,31.89,8]},
+          // {"name":"鄂尔多斯","value":[109.781327,39.608266,102],"num":[109.781327,39.608266,15],"id":[109.781327,39.608266,16]},
+          // {"name":"齐齐哈尔","value":[123.97,47.33,140],"num":[123.97,47.33,30],"id":[123.97,47.33,20]}]
+          if (geoCoord) {
+            res.push({
+              name: data[i].name,
+              value: geoCoord.concat(data[i].value),
+              siteNum: geoCoord.concat(data[i].siteNum),
+              batteryNum: geoCoord.concat(data[i].batteryNum),
+              onlineNum: geoCoord.concat(data[i].onlineNum),
+              faultNum: geoCoord.concat(data[i].faultNum)
+            })
+            console.log('-------------2-----' + JSON.stringify(res))
+          }
+        }
+        return res
+      }
+
+      const myChartChina = echarts.init(document.getElementById('myChartChina')) // 这里是为了获得容器所在位置
+      window.onresize = myChartChina.resize
+      myChartChina.setOption({ // 进行相关配置
+        // backgroundColor: '#1c2431', // 地图背景色
+        geo: { // 这个是重点配置区
+          map: 'china', // 表示中国地图
+          label: {
+            normal: {
+              show: true, // 是否显示对应地名
+              textStyle: { // 字体颜色
+                // color: '#797979'
+                color: 'white'
+              }
+            },
+            emphasis: {
+              show: false,
+              textStyle: {
+                color: '#fff'
+              }
+            }
+          },
+          roam: true,
+          itemStyle: {
+            normal: {
+              borderWidth: 1, // 地图边框宽度
+              borderColor: '#014888', // 地图边框颜色
+              areaColor: '#026295' // 地图颜色
+              // areaColor: '#079393'
+            },
+            emphasis: { // 选中省份的颜色
+              // areaColor: '#026295',
+              areaColor: '#31FBFB',
+              shadowOffsetX: 0,
+              shadowOffsetY: 0,
+              shadowBlur: 0,
+              borderWidth: 1,
+              shadowColor: '#fff'
+            }
+          }
+        },
+        // 滑动显示数据
+        tooltip: { // 鼠标移到图里面的浮动提示框
+          trigger: 'item',
+          // params.data 就是series配置项中的data数据遍历
+          extraCssText: 'width:300px;height:200px',
+          formatter: function (params) {
+            const tipHtml = `
+           <div>
+            <p style='font-size:23px;margin-top: 8px;color: #01FFFF'>${params.name}</p>
+            <p style='text-align:left;margin-top:8px;font-size: 20px'>站点数量：${params.data.siteNum[2]}</p>
+            <p style='text-align:left;margin-top:8px;font-size: 20px'>电池组数量：${params.data.batteryNum[2]}</p>
+            <p style='text-align:left;margin-top:8px;font-size: 20px'>在线数量：${params.data.onlineNum[2]}</p>
+            <p style='text-align:left;margin-top:8px;font-size: 20px'>故障数量：${params.data.faultNum[2]}</p>
+            `
+
+
+            //   <p style='text-align:left;margin-top:8px;margin-bottom:4px;font-size: 20px'>故障详情：</p>
+            // <div>
+            //   <table style="text-align: center;">
+            //     <tr style="font-size: 20px;color: #01FFFF;height: 25px">
+            //       <th style="width: 160px">机房地址</th>
+            //       <th style="width: 160px">机房名称</th>
+            //       <th style="width: 160px">故障描述</th>
+            //     </tr>
+            //     <tr style="font-size: 18px;height: 25px">
+            //       <td style="width: 160px">湖南大学</td>
+            //       <td style="width: 160px">实验室517</td>
+            //       <td style="width: 160px">存在电池异常</td>
+            //     </tr>
+            //     <tr style="font-size: 18px;height: 25px">
+            //       <td style="width: 160px">湖南大学</td>
+            //       <td style="width: 160px">实验室518</td>
+            //       <td style="width: 160px">存在电池异常</td>
+            //     </tr>
+            //     <tr style="font-size: 18px;height: 25px">
+            //       <td style="width: 160px">湖南大学</td>
+            //       <td style="width: 160px">实验室519</td>
+            //       <td style="width: 160px">存在电池异常</td>
+            //     </tr>
+            //     <tr style="font-size: 18px;height: 25px">
+            //       <td style="width: 160px">湖南大学</td>
+            //       <td style="width: 160px">实验室520</td>
+            //       <td style="width: 160px">存在电池异常</td>
+            //     </tr>
+            //     <tr style="font-size: 18px;height: 25px">
+            //       <td style="width: 160px">湖南大学</td>
+            //       <td style="width: 160px">实验室521</td>
+            //       <td style="width: 160px">存在电池异常</td>
+            //     </tr>
+            //   </table>
+            // </div>
+
+            return tipHtml
+            // return params.name + ' 已接入: ' + ' 站点数量: ' + params.data.siteNum[2] + ' 电池组数量: ' + params.data.batteryNum[2] + ' 在线数量: ' + params.data.onlineNum[2] + ' 故障数量: ' + params.data.faultNum[2]
+          }
+        },
+        series: [{
+          name: '散点',
+          type: 'scatter',
+          coordinateSystem: 'geo',
+          // color: '#e1ebe3', // 点的颜色
+          // color: '#31FBFB',
+          // color: {if (this.data[0].faultNum > 0 ) ? 'red': '#31FBFB'},
           color: 'red',
           data: convertData(data),
           symbolSize: 30, // 点的大小
@@ -514,13 +908,13 @@ body, html{
 }
 }
 .date{
-  padding-right: 30px;
+  padding-right: 10px;
 }
 /*未开始*/
 .pro_1{
   /*//background: url("../../assets/image/other/未开始.png") no-repeat center;*/
   color:#FF0000;
-  padding-right: 30px;
+  padding-right: 10px;
   padding-left: 20px;
 }
 /*进行中*/
@@ -528,14 +922,14 @@ body, html{
   /*//background: url("../../assets/image/other/进行中.png") no-repeat center;*/
   /*#00FCD8*/
   color:#F89D2E;
-  padding-right: 30px;
+  padding-right: 10px;
   padding-left: 20px;
 }
 /*已完成*/
 .pro_3{
   /*//background: url("../../assets/image/other/已完成.png") no-repeat center;*/
   color:#01FFFF;
-  padding-right: 30px;
+  padding-right: 10px;
   padding-left: 20px;
 }
 .border_1{

@@ -21,6 +21,12 @@
           placeholder="请输入控制器名称"
         />
       </el-col>
+      <el-col :span="2">
+        <el-input
+          v-model="findctrlData.ctrladdress"
+          placeholder="请输入控制器所属省份"
+        />
+      </el-col>
       <el-col :span="16">
         <el-button type="primary" icon="el-icon-search" @click="conditionQuery">查询</el-button>
         <el-button type="primary" icon="el-icon-add-location" @click="dialogFormAdd = true">添加</el-button>
@@ -55,10 +61,11 @@
       <el-table-column label="id" v-if="false" min-width="150px" prop="id" align="center"></el-table-column>
       <el-table-column label="控制器编号" min-width="150px" prop="ctrl_num" align="center"></el-table-column>
       <el-table-column label="控制器名称" min-width="150px" prop="ctrl_name" align="center"></el-table-column>
-      <el-table-column label="备注" min-width="200px" prop="remarks" align="center"></el-table-column>
+      <el-table-column label="所属省份" min-width="120px" prop="ctrl_address" align="center"></el-table-column>
       <el-table-column label="创建时间" min-width="200px" prop="create_time" align="center"></el-table-column>
       <el-table-column label="设备ID" min-width="200px" prop="dev_id" align="center"></el-table-column>
       <el-table-column label="设备token" min-width="200px" prop="dev_token" align="center"></el-table-column>
+      <el-table-column label="备注" min-width="200px" prop="remarks" align="center"></el-table-column>
       <el-table-column label="操作" width="180" fixed="right" align="center">
         <template slot-scope="scope">
           <el-button
@@ -93,6 +100,9 @@
         <el-form-item label="公司名称" prop="corpName" :label-width="formLabelWidth">
           <el-input type="text" v-model="devctrlFormAdd.corpName"></el-input>
         </el-form-item>
+        <el-form-item label="所属省份" prop="ctrlAddr" :label-width="formLabelWidth">
+          <el-input type="text" v-model="devctrlFormAdd.ctrlAddr"></el-input>
+        </el-form-item>
         <el-form-item label="备注" prop="remarks" :label-width="formLabelWidth">
           <el-input type="textarea" v-model="devctrlFormAdd.remarks"></el-input>
         </el-form-item>
@@ -114,6 +124,9 @@
         </el-form-item>
         <el-form-item label="公司名称" prop="corp_name" :label-width="formLabelWidth">
           <el-input type="text" v-model="devctrlFormEdit.corp_name"></el-input>
+        </el-form-item>
+        <el-form-item label="所属省份" prop="ctrl_address" :label-width="formLabelWidth">
+          <el-input type="text" v-model="devctrlFormEdit.ctrl_address"></el-input>
         </el-form-item>
         <el-form-item label="备注" prop="remarks" :label-width="formLabelWidth">
           <el-input type="textarea" v-model="devctrlFormEdit.remarks"></el-input>
@@ -158,6 +171,7 @@ export default {
         corpName: '',
         ctrlNum: '',
         ctrlName: '',
+        ctrlAddr: '',
         remarks: '',
         createTime: '',
         deviceId: '',
@@ -171,7 +185,8 @@ export default {
         dev_id: '',
         dev_token: '',
         remarks: '',
-        id: ''
+        id: '',
+        ctrl_address: ''
       },
       rules: {
         ctrlName: [
@@ -183,6 +198,9 @@ export default {
         ],
         corpName: [
           { required: true, message: '请输入公司名称', trigger: 'blur' }
+        ],
+        ctrlAddr: [
+          { required: true, message: '请输入所属省份', trigger: 'blur' }
         ],
         remarks: [
           { required: false, message: '请填写备注', trigger: 'blur' }
@@ -199,6 +217,9 @@ export default {
         corp_name: [
           { required: true, message: '请输入公司名称', trigger: 'blur' }
         ],
+        ctrl_address: [
+          { required: true, message: '请输入所属省份', trigger: 'blur' }
+        ],
         remarks: [
           { required: false, message: '请填写备注', trigger: 'blur' }
         ]
@@ -211,7 +232,8 @@ export default {
         dev_id: '',
         dev_token: '',
         id: '',
-        remarks: ''
+        remarks: '',
+        ctrl_address: ''
       },
       devctrlInfoUpdate: {
         corp_name: '',
@@ -221,7 +243,8 @@ export default {
         dev_id: '',
         dev_token: '',
         id: '',
-        remarks: ''
+        remarks: '',
+        ctrl_address: ''
       },
       devctrlInfoDelete: {
         corp_name: '',
@@ -231,11 +254,13 @@ export default {
         dev_id: '',
         dev_token: '',
         id: '',
-        remarks: ''
+        remarks: '',
+        ctrl_address: ''
       },
       findctrlData: {
         corpname: '',
         ctrlname: '',
+        ctrladdress: '',
         pagenum: '0', // 当前页数
         pagesize: '10' // 每页条目数
       },
@@ -299,6 +324,7 @@ export default {
           this.devctrlInfoAdd.ctrl_num = this.devctrlFormAdd.ctrlNum
           this.devctrlInfoAdd.corp_name = this.devctrlFormAdd.corpName
           this.devctrlInfoAdd.remarks = this.devctrlFormAdd.remarks
+          this.devctrlInfoAdd.ctrl_address = this.devctrlFormAdd.ctrlAddr
           console.log('---this.devctrlInfoAdd--' + JSON.stringify(this.devctrlInfoAdd))
 
           addDevctrl(this.devctrlInfoAdd).then(res => {
@@ -333,6 +359,7 @@ export default {
           this.devctrlInfoUpdate.id = this.devctrlFormEdit.id
           this.devctrlInfoUpdate.dev_token = this.devctrlFormEdit.dev_token
           this.devctrlInfoUpdate.remarks = this.devctrlFormEdit.remarks
+          this.devctrlInfoUpdate.ctrl_address = this.devctrlFormEdit.ctrl_address
           console.log('---this.devctrlInfoUpdate--' + JSON.stringify(this.devctrlInfoUpdate))
 
           updateDevctrl(this.devctrlInfoUpdate).then(res => {
@@ -377,6 +404,7 @@ export default {
       this.devctrlFormEdit.id = val.id
       this.devctrlFormEdit.remarks = val.remarks
       this.devctrlFormEdit.dev_id = val.dev_id
+      this.devctrlFormEdit.ctrl_address = val.ctrl_address
     },
     handleDelete (val) {
       this.devctrlInfoDelete.corp_name = val.corp_name
@@ -386,6 +414,7 @@ export default {
       this.devctrlInfoDelete.dev_token = val.dev_token
       this.devctrlInfoDelete.id = val.id
       this.devctrlInfoDelete.remarks = val.remarks
+      this.devctrlInfoDelete.ctrl_address = val.ctrl_address
       console.log('---this.devctrlInfoDelete--' + JSON.stringify(this.devctrlInfoDelete))
       this.dialogVisibleDelete = true
     },
@@ -413,20 +442,22 @@ export default {
     clearCondition () {
       this.findctrlData.ctrlname = ''
       this.findctrlData.corpname = ''
+      this.findctrlData.ctrladdress = ''
     },
     exportExcel () {
       // this.htmlToExcels.exportExcel('控制器管理.xlsx', '#devctrlManage')
       const excelData = this.devctrlTable // 将你要导出的数组数据（historyList）赋值给excelDate
       console.log('--excelData---' + JSON.stringify(this.excelData))
-      const tHeader = ['公司名称', '控制器编号', '控制器名称', '备注', '创建时间', '设备id', '设备token'] // 导出的excel表头名信息
+      const tHeader = ['公司名称', '控制器编号', '控制器名称', '所属省份', '创建时间', '设备id', '设备token', '备注'] // 导出的excel表头名信息
       const filterVal = [
         'corp_name',
         'ctrl_num',
         'ctrl_name',
-        'remarks',
+        'ctrl_address',
         'create_time',
         'dev_id',
-        'dev_token'
+        'dev_token',
+        'remarks'
       ] // 导出的excel表头字段名，需要导出表格字段名
       const title = '控制器管理'
       this.htmlToExcels.export2Excel(excelData, tHeader, filterVal, title) // 调用export2Excel函数，填写表头（clomns里的type）和对应字段(historyList里的属性名)

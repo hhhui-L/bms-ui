@@ -28,6 +28,10 @@
                 <i class="el-icon-user"></i>
                 <span slot="title">用户管理</span>
               </el-menu-item>
+              <el-menu-item index="/role/manage">
+                <i class="el-icon-user-solid"></i>
+                <span slot="title">角色管理</span>
+              </el-menu-item>
               <el-menu-item index="/alarm/manage">
                 <i class="el-icon-guide"></i>
                 <span slot="title">报警管理</span>
@@ -124,14 +128,14 @@
               <i class="el-icon-setting"></i>
               <span slot="title">电池组详情</span>
             </el-menu-item>
-            <el-menu-item index="/sensor/details">
-              <i class="el-icon-setting"></i>
-              <span slot="title">电池单体详情</span>
-            </el-menu-item>
-            <el-menu-item index="/test">
-              <i class="el-icon-setting"></i>
-              <span slot="title">test</span>
-            </el-menu-item>
+<!--            <el-menu-item index="/sensor/details">-->
+<!--              <i class="el-icon-setting"></i>-->
+<!--              <span slot="title">电池单体详情</span>-->
+<!--            </el-menu-item>-->
+<!--            <el-menu-item index="/test">-->
+<!--              <i class="el-icon-setting"></i>-->
+<!--              <span slot="title">test</span>-->
+<!--            </el-menu-item>-->
           </el-menu>
         </el-aside>
       <el-container>

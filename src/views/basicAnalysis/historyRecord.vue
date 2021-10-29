@@ -244,7 +244,12 @@ export default {
       }, {
         value: 'sensor024',
         label: '电池024'
-      }],
+      }
+      //   {
+      //   value: 'sensor000',
+      //   label: '电池组'
+      // }
+      ],
       timeRange: null
     }
   },
@@ -253,7 +258,8 @@ export default {
   },
   methods: {
     getRecord () {
-      const baseUrl = 'http://192.168.0.110:5000/findbycidandtime'
+      // const baseUrl = 'http://192.168.0.110:5000/findbycidandtime'
+      const baseUrl = 'http://47.97.21.239:5000/findbycidandtime'
       axios({
         url: baseUrl,
         method: 'get',

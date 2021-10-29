@@ -30,21 +30,21 @@ export default {
   },
   methods: {
     getChartData () {
-      const baseUrl = 'http://192.168.0.110:5000/findbycid'
+      const baseUrl = 'http://192.168.0.144:5000/todayinfo/sensor'
       axios({
         url: baseUrl,
         method: 'get',
         params: {
           // cid: 'sensor' + this.devNum
-          cid: this.devNum
+          clientid: this.devNum
         }
       }).then((res) => {
         console.log('--------sensor.devNum-----------' + this.devNum)
         console.log(JSON.stringify(res.data.data))
         const result = res.data.data
         for (let i = 0; i < result.length; i++) {
-          this.voltage.push((result[i].Vol / 1000).toFixed(1))
-          this.resistance.push(result[i].Res)
+          this.voltage.push((result[i].volt / 1000).toFixed(1))
+          this.resistance.push(result[i].res)
 
           this.voltageIndex.push(i)
           this.resIndex.push(i)
@@ -185,7 +185,10 @@ export default {
         },
         // 提示框
         tooltip: {
-          trigger: 'axis'
+          trigger: 'axis',
+          textStyle: {
+            fontSize: '23'
+          }
         },
         // 图例
         legend: {
@@ -234,7 +237,7 @@ export default {
           // 设置字体倾斜
           axisLabel: {
             interval: 0,
-            rotate: 80,
+            rotate: 50,
             // 倾斜度 -90 至 90 默认为0
             margin: 10,
             textStyle: {

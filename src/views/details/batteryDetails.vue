@@ -133,14 +133,14 @@
           </el-row>
         </el-card>
       </div>
-      <div style="padding: 0px 10px 10px 60px;float: left;width: 90%;height:17%">
-        <div id="voltageCharts" style="width:88%;height:240px;margin-top: 0px}"></div>
+      <div style="padding: 0px 10px 10px 60px;float: left;width: 90%;height:20%">
+        <div id="voltageCharts" style="width:88%;height:250px;margin-top: 0px}"></div>
       </div>
-      <div style="padding: 0px 10px 10px 60px;float: left;width: 90%;height:17%">
-        <div id="currentCharts" style="width:88%;height:240px;margin-top: 0px}"></div>
+      <div style="padding: 0px 10px 10px 60px;float: left;width: 90%;height:20%">
+        <div id="currentCharts" style="width:88%;height:250px;margin-top: 0px}"></div>
       </div>
-      <div style="padding: 0px 10px 10px 60px;float: left;width: 90%;height:17%">
-        <div id="socCharts" style="width:88%;height:240px;margin-top: 0px}"></div>
+      <div style="padding: 0px 10px 10px 60px;float: left;width: 90%;height:20%">
+        <div id="socCharts" style="width:88%;height:250px;margin-top: 0px}"></div>
       </div>
     </div>
   </div>
@@ -150,7 +150,7 @@
 import echarts from 'echarts'
 import { getPacklist } from '@/network/packDetails'
 import axios from 'axios'
-import { toDate } from '@/network/time'
+import { toDate, toStamp } from '@/network/time'
 
 export default {
   name: 'batteryDetails',
@@ -215,8 +215,8 @@ export default {
       })
     },
     getPackDetails () {
-      // const baseUrl = 'http://192.168.0.122:5000/dash/packstatus'
-      const baseUrl = 'http://192.168.0.110:5000/dash/packstatus'
+      const baseUrl = 'http://47.97.21.239:5000/dash/packstatus'
+      // const baseUrl = 'http://192.168.0.110:5000/dash/packstatus'
       const url = baseUrl + '?packid=' + this.packid
       // console.log('--------url---------' + url)
       axios({
@@ -248,14 +248,15 @@ export default {
       // getChartData(info).then(res => {
       //   console.log('-----' + JSON.stringify(res.data))
       // })
-      const baseUrl = 'http://192.168.0.110:5000/findbycid'
+      // const baseUrl = 'http://192.168.0.110:5000/findbycid'
+      const baseUrl = 'http://192.168.0.144:5000/todayinfo/group'
       // const url = baseUrl + '?cid=battery100'
       // console.log('--------url---------' + url)
       axios({
         url: baseUrl,
         method: 'get',
         params: {
-          cid: 'sensor000'
+          clientid: 'sensor000'
         }
       }).then((res) => {
         console.log(JSON.stringify(res.data))
@@ -266,9 +267,12 @@ export default {
           this.voltage.push((result[i].tolvolt / 10).toFixed(1))
           this.current.push(Math.abs((result[i].tolcur).toFixed(1)))
           this.soc.push(result[i].soc)
-          this.voltageIndex.push(i)
-          this.currentIndex.push(i)
-          this.socIndex.push(i)
+          this.voltageIndex.push(toStamp(Number(result[i].tolts)))
+          this.currentIndex.push(toStamp(Number(result[i].tolts)))
+          this.socIndex.push(toStamp(Number(result[i].tolts)))
+          // this.voltageIndex.push(result[i].cellts)
+          // this.currentIndex.push(result[i].cellts)
+          // this.socIndex.push(result[i].cellts)
         }
         console.log('纵坐标1------>电压' + this.voltage)
         console.log('横坐标1------>电压' + this.voltageIndex)
@@ -363,12 +367,23 @@ export default {
               width: '2' // 坐标线的宽度
             }
           },
+          // 设置字体倾斜
           axisLabel: {
+            interval: 0,
+            rotate: 45,
+            // 倾斜度 -90 至 90 默认为0
+            margin: 10,
             textStyle: {
-              fontSize: '20',
-              color: 'white'
+              color: 'white',
+              fontSize: '15'
             }
           }
+          // axisLabel: {
+          //   textStyle: {
+          //     fontSize: '20',
+          //     color: 'white'
+          //   }
+          // }
         },
         yAxis: {
           type: 'value',
@@ -468,12 +483,23 @@ export default {
               width: '2' // 坐标线的宽度
             }
           },
+          // 设置字体倾斜
           axisLabel: {
+            interval: 0,
+            rotate: 45,
+            // 倾斜度 -90 至 90 默认为0
+            margin: 10,
             textStyle: {
-              fontSize: '20',
-              color: 'white'
+              color: 'white',
+              fontSize: '15'
             }
           }
+          // axisLabel: {
+          //   textStyle: {
+          //     fontSize: '20',
+          //     color: 'white'
+          //   }
+          // }
         },
         yAxis: {
           type: 'value',
@@ -574,12 +600,23 @@ export default {
               width: '2' // 坐标线的宽度
             }
           },
+          // 设置字体倾斜
           axisLabel: {
+            interval: 0,
+            rotate: 45,
+            // 倾斜度 -90 至 90 默认为0
+            margin: 10,
             textStyle: {
-              fontSize: '20',
-              color: 'white'
+              color: 'white',
+              fontSize: '15'
             }
           }
+          // axisLabel: {
+          //   textStyle: {
+          //     fontSize: '20',
+          //     color: 'white'
+          //   }
+          // }
         },
         yAxis: {
           type: 'value',

@@ -241,8 +241,8 @@ export default {
   },
   methods: {
     getPackdetail () {
-      // const baseUrl = 'http://192.168.0.122:5000/dash/packdetail'
-      const baseUrl = 'http://192.168.0.110:5000/dash/packdetail'
+      const baseUrl = 'http://47.97.21.239:5000/dash/packdetail'
+      // const baseUrl = 'http://192.168.0.110:5000/dash/packdetail'
       const url = baseUrl + '?packid=' + this.packid
       console.log('--------url---------' + url)
       axios({
@@ -254,8 +254,8 @@ export default {
       })
     },
     getPackStatus () {
-      // const baseUrl = 'http://192.168.0.122:5000/dash/packstatus'
-      const baseUrl = 'http://192.168.0.110:5000/dash/packstatus'
+      const baseUrl = 'http://47.97.21.239:5000/dash/packstatus'
+      // const baseUrl = 'http://192.168.0.110:5000/dash/packstatus'
       const url = baseUrl + '?packid=' + this.packid
       // console.log('--------url---------' + url)
       axios({
@@ -277,15 +277,15 @@ export default {
         this.cellVer = this.packStatus.values.CellVer
         this.debugDetail = this.packStatus.values.DebugDetail
         this.time = toDate(this.packStatus.ts)
-        this.voltage = this.packStatus.values.TolVolt
-        this.current = this.packStatus.values.TolCur
+        this.voltage = this.packStatus.values.TolVolt.toFixed(2)
+        this.current = this.packStatus.values.TolCur.toFixed(2)
         this.SOC = this.packStatus.values.Soc
         console.log('--------packStatus---------' + JSON.stringify(this.packStatus))
       })
     },
     getRealtimeDetail () {
-      // const baseUrl = 'http://192.168.0.122:5000/dash/realtime'
-      const baseUrl = 'http://192.168.0.110:5000/dash/realtime'
+      const baseUrl = 'http://47.97.21.239:5000/dash/realtime'
+      // const baseUrl = 'http://192.168.0.110:5000/dash/realtime'
       const url = baseUrl + '?packid=' + this.packid
       // console.log('--------url---------' + url)
       axios({

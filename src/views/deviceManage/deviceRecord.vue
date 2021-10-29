@@ -65,9 +65,9 @@
       <el-table-column label="设备编号" min-width="150px" prop="dev_num" align="center"></el-table-column>
       <el-table-column label="控制器编号" min-width="200px" prop="ctrl_num" align="center"></el-table-column>
       <el-table-column label="创建时间" min-width="200px" prop="create_time" align="center"></el-table-column>
-      <el-table-column label="设备ID" min-width="200px" prop="dev_id" align="center"></el-table-column>
-      <el-table-column label="对应电池编号" min-width="200px" prop="bat_model" align="center"></el-table-column>
-      <el-table-column label="设备SN码" min-width="200px" prop="dev_sn" align="center"></el-table-column>
+      <el-table-column label="设备ID" min-width="220px" prop="dev_id" align="center"></el-table-column>
+      <el-table-column label="对应电池编号" min-width="150px" prop="bat_model" align="center"></el-table-column>
+      <el-table-column label="设备SN码" min-width="150px" prop="dev_sn" align="center"></el-table-column>
       <el-table-column label="操作" width="230" fixed="right" align="center">
         <template slot-scope="scope">
           <el-button
